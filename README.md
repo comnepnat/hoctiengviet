@@ -36,7 +36,7 @@
 
 ## Giọng Google Cloud Text-to-Speech
 
-Dán API Key Google Cloud vào **Góc Ba Mẹ → Cài đặt & Giọng đọc** (chọn Google Cloud TTS). Mỗi hãng (Google / OpenAI / ElevenLabs) có ô khóa riêng, nên khóa của hãng này không bao giờ bị gửi sang hãng khác. Khóa được gửi qua header `X-Goog-Api-Key`, không nằm trong URL.
+Vào **Góc Ba Mẹ → Cài đặt & Giọng đọc → ☁️ Giọng AI tự nhiên**, chọn *Google Cloud TTS*, dán API Key rồi bấm **Lưu & kiểm tra khóa**. Nếu dự án chưa có giọng Chirp 3 HD, app tự chuyển sang Neural2 → WaveNet → Standard; nếu lỗi liên tiếp 3 lần (sai khóa, hết hạn mức, mất mạng) app tạm dùng giọng thiết bị. Mỗi hãng (Google / OpenAI / ElevenLabs) có ô khóa riêng, nên khóa của hãng này không bao giờ bị gửi sang hãng khác. Khóa được gửi qua header `X-Goog-Api-Key`, không nằm trong URL.
 
 Vì khóa nằm trong trình duyệt, hãy giới hạn nó trong Google Cloud Console:
 - **API restrictions** → chỉ cho phép *Cloud Text-to-Speech API*.

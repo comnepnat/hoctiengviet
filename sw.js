@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bi-bo-v4';
+const CACHE_NAME = 'bi-bo-v5';
 const ASSETS = [
   './',
   './index.html',

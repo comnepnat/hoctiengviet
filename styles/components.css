@@ -2553,3 +2553,87 @@
     animation: none;
   }
 }
+
+/* ==========================================================================
+   Khung kết nối Google Cloud Text-to-Speech (Góc Ba Mẹ)
+   ========================================================================== */
+.cloud-tts-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--accent-sky-soft);
+  border: 1.5px solid rgba(101, 158, 199, 0.3);
+}
+
+.cloud-tts-box__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.08rem;
+  color: var(--ink-primary);
+}
+
+.cloud-tts-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cloud-tts-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--ink-secondary);
+}
+
+.cloud-tts-field .styled-select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.cloud-tts-key-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.cloud-tts-key-row input {
+  flex: 1;
+  min-width: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.cloud-tts-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.cloud-tts-status {
+  margin: 0;
+  font-weight: 700;
+  color: var(--ink-primary);
+  line-height: 1.45;
+}
+
+.cloud-tts-guide summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--accent-sky-dark);
+}
+
+.cloud-tts-guide ol {
+  margin: var(--space-2) 0 0;
+  padding-left: 1.3em;
+  color: var(--ink-secondary);
+  line-height: 1.55;
+}
+
+.cloud-tts-guide code {
+  background: var(--surface-card);
+  padding: 1px 6px;
+  border-radius: 6px;
+}

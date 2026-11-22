@@ -18,6 +18,7 @@ import {
   saveState
 } from '../services/storage.js';
 import {
+  resetAiVoiceSession,
   AI_VOICE_PRESETS,
   getActiveVoiceInfo,
   getLastAiVoiceError,
@@ -710,6 +711,7 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
       container.querySelector('#btn-ft-save-key')?.addEventListener('click', () => {
         const keyVal = (container.querySelector('#ft-ai-key')?.value || '').trim();
         saveAiApiKey(loadState().voiceProvider, keyVal);
+        resetAiVoiceSession();
         playSfx('celebrate');
         if (showToast) showToast(keyVal ? 'Đã lưu API Key giọng AI tự nhiên!' : 'Đã xóa API Key.');
         renderReader(false);
