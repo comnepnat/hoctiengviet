@@ -5,7 +5,9 @@
 import { AGE_STAGES, getStageMeta } from '../data/curriculum.js';
 import { DAILY_PARENT_TIPS } from '../data/parentTips.js';
 import { loadState, saveState } from '../services/storage.js';
-import { playSfx, speakText } from '../services/audio.js';
+import { playSfx, speakText, stopSpeaking } from '../services/audio.js';
+import { parseIntent, NL_SUGGESTIONS } from '../services/intent.js';
+import { isCommandListeningSupported, listenForCommand, stopActiveListening } from '../services/voice.js';
 
 const GREETINGS = [
   'Chào bé yêu! Hôm nay mình cùng tập nói nhé!',
@@ -13,8 +15,15 @@ const GREETINGS = [
   'Chào bạn nhỏ dễ thương! Chạm vào thẻ để nghe Gấu nói nhé!'
 ];
 
-export function renderHomeView(container, { navigate, onStageChanged, spawnStars }) {
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+
+export function renderHomeView(container, helpers) {
+  const { navigate, onStageChanged, spawnStars, showToast, openParentGate } = helpers;
   const state = loadState();
+  const micSupported = isCommandListeningSupported();
+  const suggestions = [...NL_SUGGESTIONS].sort(() => Math.random() - 0.5).slice(0, 4);
   const stage = getStageMeta(state.ageStage);
   const tipIndex = state.dailyTipIndex % DAILY_PARENT_TIPS.length;
   const tip = DAILY_PARENT_TIPS[tipIndex];
@@ -46,6 +55,38 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
           </div>
         </div>
       </div>
+
+      <form id="ask-bear-form" class="ask-bear" role="search" aria-label="Hỏi Gấu Mây bằng lời nói tự nhiên" autocomplete="off">
+        <label for="ask-bear-input" class="ask-bear__label">💬 Hỏi Gấu Mây — gõ hoặc nói tự nhiên</label>
+        <div class="ask-bear__row">
+          <input
+            id="ask-bear-input"
+            class="ask-bear__input"
+            type="text"
+            inputmode="text"
+            enterkeyhint="send"
+            maxlength="160"
+            placeholder="Vd: kể chuyện Cây Khế"
+          />
+          ${
+            micSupported
+              ? `<button id="ask-bear-mic" class="ask-bear__mic" type="button" aria-label="Nói với Gấu Mây">
+                  <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <rect x="9" y="3" width="6" height="11" rx="3"/>
+                    <path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>
+                  </svg>
+                </button>`
+              : ''
+          }
+          <button class="ask-bear__send" type="submit" aria-label="Gửi cho Gấu Mây">Gửi</button>
+        </div>
+        <div class="ask-bear__chips" role="group" aria-label="Câu gợi ý">
+          ${suggestions
+            .map((sug) => `<button type="button" class="ask-bear__chip" data-suggest="${escapeHtml(sug)}">${escapeHtml(sug)}</button>`)
+            .join('')}
+        </div>
+        <p id="ask-bear-reply" class="ask-bear__reply" role="status" aria-live="polite" hidden></p>
+      </form>
 
       <div class="activity-grid">
         <button id="door-cards" class="activity-door activity-door--cards" type="button">
@@ -130,7 +171,7 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
       playSfx('tap');
       saveState({ ageStage: nextStage });
       onStageChanged(nextStage);
-      renderHomeView(container, { navigate, onStageChanged, spawnStars });
+      renderHomeView(container, helpers);
     });
   });
 
@@ -159,6 +200,129 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
   container.querySelector('#btn-next-tip').addEventListener('click', () => {
     playSfx('tap');
     saveState({ dailyTipIndex: (tipIndex + 1) % DAILY_PARENT_TIPS.length });
-    renderHomeView(container, { navigate, onStageChanged, spawnStars });
+    renderHomeView(container, helpers);
   });
+
+  /* ---------- Hỏi Gấu Mây: nhập ngôn ngữ tự nhiên ---------- */
+  const askForm = container.querySelector('#ask-bear-form');
+  const askInput = container.querySelector('#ask-bear-input');
+  const askReply = container.querySelector('#ask-bear-reply');
+  const askMic = container.querySelector('#ask-bear-mic');
+  let micSession = null;
+  let navTimer = null;
+
+  const showReply = (text, { speak = true } = {}) => {
+    askReply.hidden = false;
+    askReply.textContent = text;
+    if (speak) speakText(text);
+  };
+
+  const ROUTES = {
+    fairytale: 'fairytales',
+    'fairytale-list': 'fairytales',
+    cards: 'cards',
+    vocab: 'cards',
+    scene: 'stories',
+    'scene-list': 'stories',
+    listen: 'listen'
+  };
+
+  const runCommand = (text) => {
+    const intent = parseIntent(text);
+    clearTimeout(navTimer);
+    playSfx('tap');
+
+    if (intent.type === 'stop') {
+      stopSpeaking();
+      showReply(intent.reply, { speak: false });
+      return;
+    }
+    if (intent.type === 'parents') {
+      showReply(intent.reply, { speak: false });
+      if (openParentGate) openParentGate();
+      return;
+    }
+    if (intent.type === 'say') {
+      showReply(`Gấu nói: “${intent.params.text}”`, { speak: false });
+      speakText(intent.params.text);
+      return;
+    }
+    if (intent.type === 'home' || intent.type === 'greet' || intent.type === 'thanks') {
+      mascotBtn.classList.remove('is-talking');
+      void mascotBtn.offsetWidth;
+      mascotBtn.classList.add('is-talking');
+      playSfx('warm');
+      showReply(intent.reply);
+      return;
+    }
+
+    const route = ROUTES[intent.type];
+    if (route) {
+      // Hiện câu trả lời ngắn rồi mở màn hình tương ứng (màn hình mới sẽ tự đọc nội dung)
+      showReply(intent.reply, { speak: false });
+      const rect = askForm.getBoundingClientRect();
+      spawnStars(rect.left + rect.width / 2, rect.top + 20, 4);
+      navTimer = setTimeout(() => {
+        navigate(route, intent.params || {});
+        if (showToast) showToast(intent.reply);
+      }, 650);
+      return;
+    }
+
+    // help / unknown: luôn nhẹ nhàng, không báo sai
+    showReply(intent.reply);
+  };
+
+  askForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = askInput.value.trim();
+    if (!text) {
+      askInput.focus();
+      return;
+    }
+    runCommand(text);
+  });
+
+  container.querySelectorAll('.ask-bear__chip').forEach((chip) => {
+    chip.addEventListener('click', () => {
+      askInput.value = chip.dataset.suggest;
+      runCommand(chip.dataset.suggest);
+    });
+  });
+
+  if (askMic) {
+    const setListening = (on) => {
+      askMic.classList.toggle('is-listening', on);
+      askMic.setAttribute('aria-label', on ? 'Đang nghe… chạm để dừng' : 'Nói với Gấu Mây');
+      askInput.placeholder = on ? 'Gấu đang nghe bé nói…' : 'Vd: kể chuyện Cây Khế';
+    };
+    askMic.addEventListener('click', () => {
+      if (micSession) {
+        micSession.stop();
+        return;
+      }
+      playSfx('tap');
+      askInput.value = '';
+      setListening(true);
+      micSession = listenForCommand({
+        onInterim: (t) => {
+          askInput.value = t;
+        },
+        onResult: (t) => {
+          askInput.value = t;
+          runCommand(t);
+        },
+        onError: (msg) => showReply(msg, { speak: false }),
+        onEnd: () => {
+          micSession = null;
+          setListening(false);
+        }
+      });
+    });
+  }
+
+  return () => {
+    clearTimeout(navTimer);
+    if (micSession) stopActiveListening();
+  };
 }

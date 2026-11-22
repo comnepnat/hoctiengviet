@@ -75,7 +75,7 @@ function updateHeaderUI() {
   brandMark.classList.toggle('hidden', !isHome);
 }
 
-async function navigate(viewName) {
+async function navigate(viewName, params = {}) {
   if (currentCleanup) {
     currentCleanup();
     currentCleanup = null;
@@ -97,7 +97,9 @@ async function navigate(viewName) {
     spawnStars,
     onStageChanged: () => updateHeaderUI(),
     onTimerChanged: (mins) => scheduleBedtimeTimer(mins),
-    onPreviewBedtime: () => showBedtimeOverlay()
+    onPreviewBedtime: () => showBedtimeOverlay(),
+    openParentGate: () => openParentGate(),
+    params: params || {}
   };
 
   if (viewName === 'home') {

@@ -1,10 +1,12 @@
 {
   "name": "bi-bo-hoc-noi-tu-nhien",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Bi Bô - Ứng dụng học nói tiếng Việt tự nhiên cho bé từ 18 tháng đến 3 tuổi",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "python3 -m http.server 4173",
-    "start": "npx -y serve -l 4173 ."
+    "start": "npx -y serve -l 4173 .",
+    "test": "node --test tests/*.test.mjs"
   }
 }

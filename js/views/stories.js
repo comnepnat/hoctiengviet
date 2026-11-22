@@ -8,8 +8,8 @@ import { loadState } from '../services/storage.js';
 import { playSfx, speakText, stopSpeaking } from '../services/audio.js';
 import { startToddlerListening, stopActiveListening } from '../services/voice.js';
 
-export function renderStoriesView(container, { spawnStars }) {
-  let activeStoryId = null;
+export function renderStoriesView(container, { spawnStars, params = {} }) {
+  let activeStoryId = DAILY_STORIES.some((s) => s.id === params.storyId) ? params.storyId : null;
   let selectedHotspotId = null;
   let foundHotspots = new Set();
   let activeListener = null;
@@ -248,7 +248,8 @@ export function renderStoriesView(container, { spawnStars }) {
     }
   }
 
-  renderPicker();
+  if (activeStoryId) renderStoryScene(true);
+  else renderPicker();
 
   return () => {
     stopMic();

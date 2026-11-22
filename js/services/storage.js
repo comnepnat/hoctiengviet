@@ -15,7 +15,8 @@ const DEFAULT_STATE = {
   speechRate: 0.92,
   selectedVoiceURI: '',
   voiceProvider: 'browser', // 'browser' | 'openai' | 'google' | 'elevenlabs'
-  aiApiKey: '',
+  aiApiKey: '', // cũ — giữ để chuyển đổi dữ liệu
+  aiApiKeys: {}, // { google, openai, elevenlabs } — mỗi hãng một khóa riêng
   aiVoiceId: 'nova',
   storyAmbientMusic: false,
   spokenWords: [],
@@ -31,7 +32,20 @@ export function loadState() {
   try {
     const raw = localStorage.getItem(STATE_KEY);
     if (!raw) return { ...DEFAULT_STATE };
-    return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    // Chuyển khóa API dùng chung (bản cũ) thành khóa riêng của hãng đang chọn,
+    // để khóa của hãng này không bao giờ bị gửi sang máy chủ hãng khác.
+    if (parsed.aiApiKey && !parsed.aiApiKeys) {
+      const provider = parsed.voiceProvider && parsed.voiceProvider !== 'browser' ? parsed.voiceProvider : 'google';
+      parsed.aiApiKeys = { [provider]: parsed.aiApiKey };
+      parsed.aiApiKey = '';
+      try {
+        localStorage.setItem(STATE_KEY, JSON.stringify(parsed));
+      } catch {
+        // ignore
+      }
+    }
+    return { ...DEFAULT_STATE, ...parsed, aiApiKeys: { ...(parsed.aiApiKeys || {}) } };
   } catch {
     return { ...DEFAULT_STATE };
   }
@@ -45,6 +59,17 @@ export function saveState(partial) {
     // Bỏ qua nếu trình duyệt chặn storage
   }
   return next;
+}
+
+/** Khóa API của hãng giọng AI đang chọn (rỗng nếu chưa nhập hoặc đang dùng giọng trình duyệt). */
+export function getAiApiKey(state = loadState(), provider = state.voiceProvider) {
+  if (!provider || provider === 'browser') return '';
+  return String(state.aiApiKeys?.[provider] || '').trim();
+}
+
+export function saveAiApiKey(provider, key) {
+  const state = loadState();
+  return saveState({ aiApiKeys: { ...state.aiApiKeys, [provider]: String(key || '').trim() } });
 }
 
 export function toggleSpokenWord(wordId) {

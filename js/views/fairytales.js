@@ -9,8 +9,10 @@
 import { FAIRYTALE_FILTERS, FAIRY_TALES } from '../data/fairytales.js';
 import {
   deleteParentRecording,
+  getAiApiKey,
   getParentRecording,
   loadState,
+  saveAiApiKey,
   markFairyTaleRead,
   saveParentRecording,
   saveState
@@ -46,9 +48,9 @@ function pageRecordingKey(storyId, idx) {
   return `ft_${storyId}_p${idx}`;
 }
 
-export function renderFairyTalesView(container, { spawnStars, showToast }) {
-  let activeFilter = 'all';
-  let activeStoryId = null;
+export function renderFairyTalesView(container, { spawnStars, showToast, params = {} }) {
+  let activeFilter = FAIRYTALE_FILTERS.some((f) => f.id === params.filter) ? params.filter : 'all';
+  let activeStoryId = FAIRY_TALES.some((s) => s.id === params.storyId) ? params.storyId : null;
   let pageIndex = 0;
   let isReading = false;
   let isAutoPlay = false;
@@ -363,7 +365,7 @@ export function renderFairyTalesView(container, { spawnStars, showToast }) {
               type="password"
               class="styled-select"
               placeholder="Dán API Key ${activeProvider === 'google' ? 'Google Cloud TTS (AIza...)' : activeProvider.toUpperCase()}..."
-              value="${state.aiApiKey || ''}"
+              value="${String(getAiApiKey(state, activeProvider)).replace(/[&"<>]/g, (c) => ({ '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;' })[c])}"
               autocomplete="off"
             />
             <button id="btn-ft-save-key" type="button" class="small-action-btn small-action-btn--rec">💾 Lưu khóa</button>
@@ -707,7 +709,7 @@ export function renderFairyTalesView(container, { spawnStars, showToast }) {
 
       container.querySelector('#btn-ft-save-key')?.addEventListener('click', () => {
         const keyVal = (container.querySelector('#ft-ai-key')?.value || '').trim();
-        saveState({ aiApiKey: keyVal });
+        saveAiApiKey(loadState().voiceProvider, keyVal);
         playSfx('celebrate');
         if (showToast) showToast(keyVal ? 'Đã lưu API Key giọng AI tự nhiên!' : 'Đã xóa API Key.');
         renderReader(false);
@@ -941,7 +943,13 @@ export function renderFairyTalesView(container, { spawnStars, showToast }) {
     });
   }
 
-  renderLibrary();
+  if (activeStoryId) {
+    renderReader(false).then(() => {
+      if (params.autoPlay) narratePage(getStoryById(activeStoryId), 0, true);
+    });
+  } else {
+    renderLibrary();
+  }
 
   return () => {
     stopMic();

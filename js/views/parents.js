@@ -9,7 +9,9 @@
 import { AGE_STAGES, CATEGORIES, VOCABULARY, getVocabByCategory } from '../data/curriculum.js';
 import { DAILY_PARENT_TIPS, SPEECH_MILESTONES } from '../data/parentTips.js';
 import {
+  getAiApiKey,
   loadState,
+  saveAiApiKey,
   saveState,
   toggleSpokenWord,
   saveParentRecording,
@@ -193,7 +195,7 @@ export async function renderParentView(
                 type="password"
                 class="styled-select"
                 placeholder="Dán API Key ${activeProvider.toUpperCase()} vào đây..."
-                value="${state.aiApiKey || ''}"
+                value="${String(getAiApiKey(state, activeProvider)).replace(/[&"<>]/g, (c) => ({ '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;' })[c])}"
                 autocomplete="off"
               />
               <button id="btn-save-ai-key" class="small-action-btn small-action-btn--rec" type="button">💾 Lưu khóa</button>
@@ -293,7 +295,7 @@ export async function renderParentView(
       saveKeyBtn.addEventListener('click', () => {
         const keyInput = body.querySelector('#ai-api-key');
         const keyVal = (keyInput?.value || '').trim();
-        saveState({ aiApiKey: keyVal });
+        saveAiApiKey(loadState().voiceProvider, keyVal);
         playSfx('celebrate');
         showToast(keyVal ? 'Đã lưu API Key giọng AI tự nhiên!' : 'Đã xóa API Key.');
         render();

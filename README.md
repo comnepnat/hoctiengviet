@@ -24,10 +24,24 @@
    - Tuyển chọn **8 truyện cổ tích Việt Nam** (*Cây Khế, Chú Cuội Cung Trăng, Cô Tấm & Cá Bống, Thánh Gióng, Bánh Chưng Bánh Giầy, Mai An Tiêm & Dưa Hấu, Cây Tre Trăm Đốt, Hoa Cúc Trắng*) và **8 truyện cổ tích Thế giới** (*Thỏ & Rùa, Củ Cải Khổng Lồ, Ba Chú Heo Con, Cô Bé Quàng Khăn Đỏ, Vịt Con Hóa Thiên Nga, Mèo Đi Hia, Bạch Tuyết & 7 Chú Lùn, Kiến & Ve Sầu*).
    - **Giọng đọc tiếng Việt tự nhiên**: tự xếp hạng & chọn giọng Neural/Natural tốt nhất của trình duyệt (ngắt nghỉ theo từng câu thoại, giữ cao độ tự nhiên), hỗ trợ **Giọng AI cao cấp** (OpenAI / Google Neural2 / ElevenLabs, lưu cache offline), **Ba Mẹ tự thu âm từng trang**, nhạc hộp ru ngủ êm dịu và **Chế độ Đêm Êm Dịu**.
 
-6. **Góc Ba Mẹ (có cổng khóa giữ 1,5 giây)**
+6. **Hỏi Gấu Mây — nhập ngôn ngữ tự nhiên (gõ hoặc nói)**
+   - Ô nhập trên trang chủ hiểu câu tiếng Việt tự nhiên, có dấu hoặc không dấu: *"kể chuyện Cây Khế"*, *"con gì kêu gâu gâu?"*, *"kể một truyện trước khi ngủ"*, *"cho bé xem các con vật"*, *"xem tranh đi công viên"*, *"chơi trò chơi"*, *"nói: con yêu mẹ"*.
+   - Nút micro dùng nhận dạng giọng nói tiếng Việt của trình duyệt (vi-VN) khi được hỗ trợ.
+   - Chạy hoàn toàn offline, không cần API Key. Các yêu cầu đổi cài đặt (hẹn giờ, độ tuổi, thu âm, giọng đọc) luôn phải qua cổng Ba Mẹ.
+
+7. **Góc Ba Mẹ (có cổng khóa giữ 1,5 giây)**
    - **Phòng thu giọng Ba Mẹ**: Ba mẹ tự thu âm giọng thật cho từng thẻ hình (lưu cục bộ bằng IndexedDB, hoạt động offline, không tải dữ liệu lên máy chủ).
    - **Nhật ký những từ đầu tiên**: Đánh dấu các từ bé đã bắt đầu nói được & xem mốc phát triển ngôn ngữ tham khảo.
    - **Hẹn giờ Bạn Gấu buồn ngủ**: Nhắc bé dừng chơi êm dịu sau 10 / 15 / 20 phút.
+
+## Giọng Google Cloud Text-to-Speech
+
+Dán API Key Google Cloud vào **Góc Ba Mẹ → Cài đặt & Giọng đọc** (chọn Google Cloud TTS). Mỗi hãng (Google / OpenAI / ElevenLabs) có ô khóa riêng, nên khóa của hãng này không bao giờ bị gửi sang hãng khác. Khóa được gửi qua header `X-Goog-Api-Key`, không nằm trong URL.
+
+Vì khóa nằm trong trình duyệt, hãy giới hạn nó trong Google Cloud Console:
+- **API restrictions** → chỉ cho phép *Cloud Text-to-Speech API*.
+- **Application restrictions** → *Websites* → chỉ tên miền đang chạy app.
+- Đặt hạn mức (quota) hoặc cảnh báo ngân sách để tránh phát sinh chi phí.
 
 ## Chạy ứng dụng tại máy
 
@@ -35,4 +49,4 @@
 npm run dev
 ```
 
-Mở trình duyệt tại `http://localhost:4173`. Trên điện thoại (iOS/Android), có thể chọn **"Thêm vào màn hình chính" (Add to Home Screen)** để dùng như ứng dụng cài đặt sẵn.
+Mở trình duyệt tại `http://localhost:4173`. Chạy kiểm thử bộ hiểu câu tự nhiên: `npm test`. Trên điện thoại (iOS/Android), có thể chọn **"Thêm vào màn hình chính" (Add to Home Screen)** để dùng như ứng dụng cài đặt sẵn.

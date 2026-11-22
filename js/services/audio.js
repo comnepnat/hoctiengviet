@@ -8,6 +8,7 @@
  */
 
 import {
+  getAiApiKey,
   getCachedAiAudio,
   getParentRecording,
   loadState,
@@ -296,7 +297,7 @@ export function pickBestVietnameseVoice(selectedURI = '') {
 
 export function getActiveVoiceInfo() {
   const state = loadState();
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const providerLabel =
       state.voiceProvider === 'google'
         ? 'Google Cloud TTS'
@@ -387,7 +388,7 @@ function buildCacheKey(provider, voiceId, text) {
 async function fetchAiSpeechBlob(text, state) {
   lastAiVoiceError = '';
   const provider = state.voiceProvider;
-  const apiKey = (state.aiApiKey || '').trim();
+  const apiKey = getAiApiKey(state);
   const voiceId = state.aiVoiceId || (AI_VOICE_PRESETS[provider]?.[0]?.id ?? 'vi-VN-Chirp3-HD-Aoede');
   if (!provider || provider === 'browser' || !apiKey) return null;
 
@@ -404,11 +405,12 @@ async function fetchAiSpeechBlob(text, state) {
         ? { audioEncoding: 'MP3', speakingRate: 0.94 }
         : { audioEncoding: 'MP3', speakingRate: 0.93, pitch: 0 };
 
+      // Gửi khóa qua header thay vì URL để khóa không nằm trong lịch sử/nhật ký đường dẫn
       const res = await fetch(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(apiKey)}`,
+        'https://texttospeech.googleapis.com/v1/text:synthesize',
         {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': apiKey },
           body: JSON.stringify({
             input: { text },
             voice: { languageCode: 'vi-VN', name: voiceId },
@@ -564,7 +566,7 @@ export async function speakText(text, { rateOverride = null, pitch = 1.0 } = {})
   if (!cleaned) return false;
 
   // 1. Ưu tiên Giọng AI Siêu Tự Nhiên nếu Ba Mẹ đã bật & nhập API Key
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const aiBlob = await fetchAiSpeechBlob(cleaned, state);
     if (aiBlob) {
       const rate = rateOverride ? Math.max(0.82, Math.min(1.15, rateOverride / 0.94)) : 1;
@@ -588,7 +590,7 @@ export async function speakNaturalParagraph(
   const rate = rateOverride ?? state.fairyStoryRate ?? 0.94;
 
   // Nếu có Giọng AI tự nhiên (OpenAI / Google Neural2 / ElevenLabs): đọc trọn đoạn mượt mà luôn!
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const aiBlob = await fetchAiSpeechBlob(paragraph, state);
     if (!shouldContinue()) return false;
     if (aiBlob) {

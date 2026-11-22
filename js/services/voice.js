@@ -278,3 +278,85 @@ export async function startParentRecording({ maxMs = 4500, onDone = () => {} }) 
 
   return { stop };
 }
+
+/**
+ * Nghe một câu lệnh tiếng Việt tự nhiên cho ô "Hỏi Gấu Mây" (SpeechRecognition vi-VN).
+ * Trả về null nếu trình duyệt không hỗ trợ.
+ * @param {{ onInterim?: (t: string) => void, onResult: (t: string) => void, onError?: (msg: string) => void, onEnd?: () => void }} opts
+ */
+export function isCommandListeningSupported() {
+  return Boolean(window.SpeechRecognition || window.webkitSpeechRecognition);
+}
+
+export function listenForCommand({ onInterim = () => {}, onResult, onError = () => {}, onEnd = () => {} }) {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    onError('Trình duyệt này chưa hỗ trợ nói lệnh. Ba mẹ gõ chữ vào ô nhé!');
+    onEnd();
+    return null;
+  }
+  stopActiveListening();
+  stopSpeaking();
+
+  const rec = new SpeechRec();
+  rec.lang = 'vi-VN';
+  rec.interimResults = true;
+  rec.continuous = false;
+  rec.maxAlternatives = 1;
+
+  let finalText = '';
+  let ended = false;
+
+  rec.onresult = (event) => {
+    let interim = '';
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const r = event.results[i];
+      if (r.isFinal) finalText += r[0].transcript;
+      else interim += r[0].transcript;
+    }
+    onInterim((finalText + ' ' + interim).trim());
+  };
+  rec.onerror = (e) => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      onError('Ba mẹ hãy cho phép quyền Micro để Gấu nghe bé nói nhé!');
+    } else if (e.error === 'no-speech') {
+      onError('Gấu chưa nghe thấy gì. Bé nói to hơn một chút nhé!');
+    } else if (e.error !== 'aborted') {
+      onError('Gấu nghe chưa rõ, mình thử lại nhé!');
+    }
+  };
+  rec.onend = () => {
+    if (ended) return;
+    ended = true;
+    activeCleanup = null;
+    if (finalText.trim()) onResult(finalText.trim());
+    onEnd();
+  };
+
+  try {
+    rec.start();
+  } catch {
+    onError('Không bật được micro lúc này, mình thử lại nhé!');
+    onEnd();
+    return null;
+  }
+
+  activeCleanup = () => {
+    ended = true;
+    try {
+      rec.abort();
+    } catch {
+      // ignore
+    }
+  };
+
+  return {
+    stop: () => {
+      try {
+        rec.stop();
+      } catch {
+        // ignore
+      }
+    }
+  };
+}
