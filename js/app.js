@@ -7,6 +7,7 @@ import { getStageMeta } from './data/curriculum.js';
 import { loadState } from './services/storage.js';
 import { playSfx, speakText, stopSpeaking } from './services/audio.js';
 import { stopActiveListening } from './services/voice.js';
+import { applyDialect } from './services/dialect.js';
 import { renderHomeView } from './views/home.js';
 import { renderCardsView } from './views/cards.js';
 import { renderListenGameView } from './views/listenGame.js';
@@ -234,5 +235,6 @@ if ('serviceWorker' in navigator) {
 
 // Khởi chạy ứng dụng
 const initialState = loadState();
+applyDialect(initialState.dialect);
 scheduleBedtimeTimer(initialState.timerMinutes);
 navigate('home');

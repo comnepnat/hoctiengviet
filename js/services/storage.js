@@ -22,10 +22,12 @@ const DEFAULT_STATE = {
   spokenWords: [],
   readFairyTales: [],
   fairyBedtimeMode: false,
+  fairyShortMode: null, // null = tự chọn theo độ tuổi (bản ngắn cho bé dưới 30 tháng)
   fairyStoryRate: 0.94,
   timerMinutes: 15, // 0 = tắt hẹn giờ
   echoEnabled: true,
-  dailyTipIndex: 0
+  dailyTipIndex: 0,
+  dialect: 'goc' // 'goc' | 'bac' | 'nam' — từ ngữ theo vùng miền
 };
 
 export function loadState() {

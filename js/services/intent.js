@@ -112,7 +112,31 @@ const VOCAB_ALIASES = {
   mua: ['mưa', 'trời mưa', 'tí tách'],
   hoa: ['hoa', 'bông hoa', 'đóa hoa'],
   trang: ['mặt trăng', 'ông trăng', 'trăng'],
-  cay: ['cây', 'cây xanh', 'cái cây']
+  cay: ['cây', 'cây xanh', 'cái cây'],
+  // Từ hành động — tránh các chữ quá phổ biến đứng một mình ("đi", "không", "chào")
+  an: ['ăn', 'bé ăn', 'măm măm'],
+  uong: ['uống', 'bé uống'],
+  ngu: ['ngủ', 'bé ngủ', 'khò khò'],
+  di: ['đi bộ', 'tập đi', 'bé đi'],
+  chay: ['chạy', 'bé chạy', 'chạy nhanh'],
+  nhay: ['nhảy', 'nhảy lên', 'bé nhảy'],
+  tam: ['tắm', 'đi tắm', 'bé tắm'],
+  danhrang: ['đánh răng'],
+  om: ['ôm', 'ôm mẹ', 'ôm ba'],
+  hon: ['thơm má', 'hôn', 'chụt chụt'],
+  ngoi: ['ngồi', 'ngồi xuống'],
+  vay: ['vẫy tay', 'bai bai', 'bye bye', 'tạm biệt'],
+  // Từ giao tiếp
+  nua: ['nữa', 'thêm nữa', 'từ nữa'],
+  het: ['hết', 'hết rồi'],
+  khong: ['lắc đầu', 'nói không', 'từ không'],
+  chocon: ['cho con'],
+  cuacon: ['của con'],
+  chao: ['chào ạ', 'con chào', 'khoanh tay chào', 'chào hỏi'],
+  camon: ['cảm ơn ạ', 'con cảm ơn', 'nói cảm ơn'],
+  da: ['dạ', 'vâng ạ', 'dạ vâng'],
+  uoa: ['ú òa', 'u òa', 'trốn tìm'],
+  giup: ['giúp con', 'giúp với']
 };
 
 const VOCAB_ENTITIES = VOCABULARY.map((v) => ({
@@ -126,7 +150,9 @@ const CATEGORY_ALIASES = {
   food: ['đồ ăn', 'thức ăn', 'món ăn', 'đồ ăn ngon', 'hoa quả', 'trái cây'],
   toys: ['đồ chơi', 'xe cộ', 'các loại xe', 'phương tiện', 'xe và đồ chơi'],
   family: ['gia đình', 'cơ thể', 'người thân', 'bộ phận cơ thể'],
-  nature: ['thiên nhiên', 'thời tiết', 'bầu trời', 'cây cối']
+  nature: ['thiên nhiên', 'thời tiết', 'bầu trời', 'cây cối'],
+  actions: ['hành động', 'động từ', 'bé làm gì', 'việc hằng ngày'],
+  social: ['từ giao tiếp', 'giao tiếp', 'lễ phép', 'chào hỏi cảm ơn']
 };
 
 const CATEGORY_ENTITIES = CATEGORIES.map((c) => ({

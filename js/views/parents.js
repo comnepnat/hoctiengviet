@@ -7,7 +7,7 @@
  */
 
 import { AGE_STAGES, CATEGORIES, VOCABULARY, getVocabByCategory } from '../data/curriculum.js';
-import { DAILY_PARENT_TIPS, SPEECH_MILESTONES } from '../data/parentTips.js';
+import { DAILY_PARENT_TIPS, SPEECH_MILESTONES, WHEN_TO_SEEK_HELP } from '../data/parentTips.js';
 import {
   getAiApiKey,
   loadState,
@@ -34,6 +34,7 @@ import {
   stopSpeaking
 } from '../services/audio.js';
 import { startParentRecording } from '../services/voice.js';
+import { DIALECTS, applyDialect } from '../services/dialect.js';
 
 function escapeAttr(str) {
   return String(str ?? '').replace(/[&"<>]/g, (c) => ({ '&': '&amp;', '"': '&quot;', '<': '&lt;', '>': '&gt;' })[c]);
@@ -133,6 +134,20 @@ export async function renderParentView(
             (s) => `
             <button type="button" class="option-pill ${state.ageStage === s.id ? 'is-active' : ''}" data-age="${s.id}">
               ${s.label} — ${s.shortTitle}
+            </button>
+          `
+          ).join('')}
+        </div>
+      </div>
+
+      <div class="setting-group">
+        <h2 class="setting-label">Từ ngữ theo vùng miền</h2>
+        <p class="setting-hint">Bé học nhanh nhất khi nghe đúng từ cả nhà vẫn nói. Áp dụng cho thẻ hình, tranh và truyện.</p>
+        <div class="option-pills">
+          ${DIALECTS.map(
+            (d) => `
+            <button type="button" class="option-pill ${(state.dialect || 'goc') === d.id ? 'is-active' : ''}" data-dialect="${d.id}">
+              ${d.label}
             </button>
           `
           ).join('')}
@@ -272,6 +287,17 @@ export async function renderParentView(
         </div>
       </div>
     `;
+
+    body.querySelectorAll('[data-dialect]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        playSfx('tap');
+        saveState({ dialect: btn.dataset.dialect });
+        applyDialect(btn.dataset.dialect);
+        const label = DIALECTS.find((d) => d.id === btn.dataset.dialect)?.label || '';
+        showToast(`Đã chọn từ ngữ: ${label}`);
+        render();
+      });
+    });
 
     body.querySelectorAll('[data-age]').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -569,6 +595,26 @@ export async function renderParentView(
           `
           ).join('')}
         </div>
+      </div>
+
+      <div class="setting-group seek-help-card">
+        <h3 class="setting-label">🩺 Khi nào nên đưa bé đi khám?</h3>
+        <p class="setting-hint">${WHEN_TO_SEEK_HELP.intro}</p>
+        <div class="tips-list">
+          ${WHEN_TO_SEEK_HELP.groups
+            .map(
+              (g) => `
+            <div class="tip-card">
+              <h4 class="tip-card__title">${g.age}</h4>
+              <ul style="margin:4px 0 0 18px; padding:0; color:var(--ink-secondary); font-size:0.9rem;">
+                ${g.signs.map((p) => `<li style="margin-bottom:4px;">${p}</li>`).join('')}
+              </ul>
+            </div>
+          `
+            )
+            .join('')}
+        </div>
+        <p class="setting-hint"><em>${WHEN_TO_SEEK_HELP.note}</em></p>
       </div>
     `;
 
