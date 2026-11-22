@@ -59,3 +59,47 @@ export const SPEECH_MILESTONES = [
     ]
   }
 ];
+
+/**
+ * Dấu hiệu nên hỏi ý kiến chuyên gia (tham khảo các hướng dẫn phổ biến về phát triển ngôn ngữ).
+ * Mục đích: giúp Ba Mẹ không bỏ lỡ thời điểm can thiệp sớm — KHÔNG phải công cụ chẩn đoán.
+ */
+export const WHEN_TO_SEEK_HELP = {
+  intro:
+    'Mỗi bé có nhịp riêng, nhưng nếu thấy một trong các dấu hiệu dưới đây, Ba Mẹ nên hỏi bác sĩ nhi hoặc chuyên viên âm ngữ trị liệu. Kiểm tra sớm không bao giờ thừa — can thiệp càng sớm càng hiệu quả.',
+  groups: [
+    {
+      age: 'Khoảng 18 tháng',
+      signs: [
+        'Chưa nói được từ có nghĩa nào (ngoài bập bẹ).',
+        'Không chỉ tay để đòi hoặc khoe đồ vật.',
+        'Chưa hiểu yêu cầu quen thuộc như "đưa mẹ", "lại đây".'
+      ]
+    },
+    {
+      age: 'Khoảng 24 tháng',
+      signs: [
+        'Nói dưới khoảng 50 từ.',
+        'Chưa ghép được cụm 2 từ ("mẹ bế", "ăn nữa").',
+        'Chủ yếu chỉ nhại lại lời người khác, ít tự nói.'
+      ]
+    },
+    {
+      age: 'Khoảng 30–36 tháng',
+      signs: [
+        'Chưa nói được câu ngắn 3 từ.',
+        'Người trong nhà khó hiểu phần lớn lời bé nói.',
+        'Không trả lời được câu hỏi đơn giản ("Cái gì đây?", "Ai đây?").'
+      ]
+    },
+    {
+      age: 'Ở bất kỳ độ tuổi nào',
+      signs: [
+        'Bé mất đi những từ hoặc kỹ năng đã từng có.',
+        'Ít quay lại khi được gọi tên hoặc ít phản ứng với âm thanh (nên kiểm tra thính lực).',
+        'Ít nhìn mắt, ít hứng thú chơi qua lại với người thân.'
+      ]
+    }
+  ],
+  note: 'Bi Bô chỉ là công cụ chơi cùng bé, không thay thế việc khám và đánh giá của chuyên gia.'
+};

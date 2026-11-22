@@ -97,7 +97,7 @@ export function renderHomeView(container, helpers) {
             </svg>
           </div>
           <h2 class="activity-door__title">Sách tranh biết nói</h2>
-          <p class="activity-door__desc">30 thẻ hình gần gũi có âm thanh sinh động và thu âm giọng bé nói theo.</p>
+          <p class="activity-door__desc">52 thẻ hình: con vật, đồ vật, việc bé làm và từ giao tiếp như "nữa", "hết", "cho con".</p>
           <span class="activity-door__cta">Mở sách tranh →</span>
         </button>
 

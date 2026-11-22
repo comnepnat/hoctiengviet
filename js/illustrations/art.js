@@ -3,6 +3,8 @@
  * Thiết kế bo tròn mềm mại, màu sắc tự nhiên Montessori dành riêng cho mắt bé 18–36 tháng.
  */
 
+import { EXTRA_VOCABULARY } from '../data/vocabExtra.js';
+
 const SVG_WRAP = (inner) =>
   `<svg viewBox="0 0 160 160" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${inner}</svg>`;
 
@@ -448,6 +450,22 @@ export const ART_MAP = {
   `)
 };
 
+/** Minh họa cho từ hành động & từ giao tiếp: biểu tượng lớn trên nền tròn ấm */
+function emojiArt(emoji, tint) {
+  // Hình ghép 2 biểu tượng (vd 🍪➕) cần nhỏ hơn để nằm gọn trong vòng tròn
+  const symbols = [...emoji].filter((c) => !/[\uFE0F\u200D]/.test(c)).length;
+  const size = symbols > 1 ? 46 : 80;
+  return SVG_WRAP(`
+    <circle cx="80" cy="80" r="64" fill="${tint}"/>
+    <circle cx="80" cy="80" r="64" stroke="#3E2F26" stroke-opacity="0.08" stroke-width="3"/>
+    <text x="80" y="84" fill="#3E2F26" text-anchor="middle" dominant-baseline="middle" font-size="${size}">${emoji}</text>
+  `);
+}
+
+const EMOJI_ART = Object.fromEntries(
+  EXTRA_VOCABULARY.map((v) => [v.id, emojiArt(v.emoji, v.category === 'social' ? '#E4E8F7' : '#FDE6CC')])
+);
+
 export function getIllustration(id) {
-  return ART_MAP[id] || ART_MAP.meo;
+  return ART_MAP[id] || EMOJI_ART[id] || ART_MAP.meo;
 }

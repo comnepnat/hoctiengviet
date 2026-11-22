@@ -36,6 +36,13 @@ const cases = [
   ['cảm ơn gấu', 'thanks'],
   ['nói: con yêu mẹ nhiều lắm', 'say', (p) => p.text === 'con yêu mẹ nhiều lắm'],
   ['Gấu ơi đọc "chúc bé ngủ ngon"', 'say', (p) => p.text === 'chúc bé ngủ ngon'],
+  ['đánh răng', 'vocab', (p) => p.vocabId === 'danhrang'],
+  ['ú òa', 'vocab', (p) => p.vocabId === 'uoa'],
+  ['tập nói cho con', 'vocab', (p) => p.vocabId === 'chocon'],
+  ['bé ăn nữa', 'vocab', (p) => p.vocabId === 'an' || p.vocabId === 'nua'],
+  ['học từ giao tiếp', 'cards', (p) => p.categoryId === 'social'],
+  ['bé làm gì', 'cards', (p) => p.categoryId === 'actions'],
+  ['đi ngủ', 'scene', (p) => p.storyId === 'bedtime'],
   ['asdfgh', 'unknown'],
   ['', 'help']
 ];

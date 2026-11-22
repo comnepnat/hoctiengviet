@@ -6,6 +6,8 @@
  *   - 30–36 tháng: Câu ngắn giao tiếp & hỏi đáp hàng ngày
  */
 
+import { EXTRA_CATEGORIES, EXTRA_VOCABULARY } from './vocabExtra.js';
+
 export const AGE_STAGES = [
   {
     id: '18-24',
@@ -33,7 +35,7 @@ export const AGE_STAGES = [
   }
 ];
 
-export const CATEGORIES = [
+const CORE_CATEGORIES = [
   { id: 'animals', name: 'Bạn động vật', tint: '#FBECE6', icon: '🐾' },
   { id: 'food', name: 'Đồ ăn ngon', tint: '#FDF4DE', icon: '🍌' },
   { id: 'toys', name: 'Xe & Đồ chơi', tint: '#E9F3FA', icon: '🚗' },
@@ -41,7 +43,7 @@ export const CATEGORIES = [
   { id: 'nature', name: 'Thiên nhiên', tint: '#EAF4EC', icon: '☀️' }
 ];
 
-export const VOCABULARY = [
+const CORE_VOCABULARY = [
   // ================= BẠN ĐỘNG VẬT =================
   {
     id: 'meo',
@@ -54,7 +56,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Meo meo! Con mèo.',
       '24-30': 'Con mèo kêu meo meo.',
-      '30-36': 'Bạn mèo con đang uống sữa ngon quá!'
+      '30-36': 'Mèo con uống sữa ngon!'
     },
     quizPrompt: {
       '18-24': 'Con mèo đâu rồi bé ơi?',
@@ -74,7 +76,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Gâu gâu! Con chó.',
       '24-30': 'Con chó vẫy đuôi.',
-      '30-36': 'Bạn chó mừng rỡ sủa gâu gâu đón bé!'
+      '30-36': 'Chó vẫy đuôi, gâu gâu!'
     },
     quizPrompt: {
       '18-24': 'Bạn chó ở đâu nào?',
@@ -94,7 +96,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Cạp cạp! Con vịt.',
       '24-30': 'Con vịt bơi nước.',
-      '30-36': 'Bạn vịt vàng đang bơi dưới ao kêu cạp cạp!'
+      '30-36': 'Vịt vàng bơi dưới ao.'
     },
     quizPrompt: {
       '18-24': 'Con vịt vàng ở đâu bé ơi?',
@@ -114,7 +116,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ò ó o! Con gà.',
       '24-30': 'Gà gáy buổi sáng.',
-      '30-36': 'Chú gà trống gáy ò ó o gọi bé thức dậy!'
+      '30-36': 'Gà gáy ò ó o!'
     },
     quizPrompt: {
       '18-24': 'Chú gà trống ở đâu nào?',
@@ -134,7 +136,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ùm bò! Con bò.',
       '24-30': 'Con bò ăn cỏ.',
-      '30-36': 'Cô bò sữa kêu ùm bò và cho bé sữa thơm!'
+      '30-36': 'Bò kêu ùm bò, ăn cỏ.'
     },
     quizPrompt: {
       '18-24': 'Bạn bò sữa ở đâu bé ơi?',
@@ -154,7 +156,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ụt ịt! Con heo.',
       '24-30': 'Heo hồng ụt ịt.',
-      '30-36': 'Bạn heo hồng có chiếc mũi tròn kêu ụt ịt!'
+      '30-36': 'Heo hồng kêu ụt ịt!'
     },
     quizPrompt: {
       '18-24': 'Bạn heo hồng đâu rồi?',
@@ -174,7 +176,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Chíp chíp! Con chim.',
       '24-30': 'Chim bay trên trời.',
-      '30-36': 'Bạn chim xanh đậu trên cành hót chíp chíp!'
+      '30-36': 'Chim hót chíp chíp trên cành.'
     },
     quizPrompt: {
       '18-24': 'Bạn chim nhỏ đâu rồi?',
@@ -196,7 +198,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Sữa! Bé uống sữa.',
       '24-30': 'Bé uống sữa ấm.',
-      '30-36': 'Con muốn uống sữa cho cao lớn ạ!'
+      '30-36': 'Con muốn uống sữa ạ!'
     },
     quizPrompt: {
       '18-24': 'Cốc sữa đâu rồi bé ơi?',
@@ -216,7 +218,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Quả chuối! Măm măm.',
       '24-30': 'Bé ăn chuối ngọt.',
-      '30-36': 'Con bóc vỏ quả chuối vàng ăn măm măm!'
+      '30-36': 'Con bóc chuối ăn nhé.'
     },
     quizPrompt: {
       '18-24': 'Quả chuối vàng ở đâu nào?',
@@ -236,7 +238,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Quả táo! Rốp rốp.',
       '24-30': 'Quả táo màu đỏ.',
-      '30-36': 'Bé cắn quả táo đỏ kêu rốp rốp thật giòn!'
+      '30-36': 'Táo đỏ giòn rốp rốp!'
     },
     quizPrompt: {
       '18-24': 'Quả táo đỏ đâu rồi bé ơi?',
@@ -256,7 +258,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Bát cơm! Măm măm.',
       '24-30': 'Bé ăn cơm ngoan.',
-      '30-36': 'Măm măm, cơm mẹ nấu ngon quá ạ!'
+      '30-36': 'Cơm mẹ nấu ngon quá!'
     },
     quizPrompt: {
       '18-24': 'Bát cơm ở đâu nào?',
@@ -276,7 +278,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Nước! Bé uống nước.',
       '24-30': 'Bé uống nước mát.',
-      '30-36': 'Con khát rồi, cho con xin cốc nước ạ!'
+      '30-36': 'Con khát, cho con nước ạ!'
     },
     quizPrompt: {
       '18-24': 'Cốc nước mát đâu rồi?',
@@ -296,7 +298,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Cái bánh! Ngon quá.',
       '24-30': 'Bánh thơm ngon quá.',
-      '30-36': 'Bé chia bánh cùng ba mẹ ăn nhé!'
+      '30-36': 'Con mời mẹ ăn bánh.'
     },
     quizPrompt: {
       '18-24': 'Cái bánh ngon đâu rồi bé ơi?',
@@ -318,7 +320,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Bíp bíp! Ô tô.',
       '24-30': 'Ô tô chạy nhanh.',
-      '30-36': 'Xe ô tô đỏ bấm còi bíp bíp đưa bé đi chơi!'
+      '30-36': 'Ô tô chạy bíp bíp!'
     },
     quizPrompt: {
       '18-24': 'Xe ô tô đâu rồi bé ơi?',
@@ -338,7 +340,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Tu tu! Tàu hỏa.',
       '24-30': 'Tàu chạy xình xịch.',
-      '30-36': 'Đoàn tàu hỏa kéo còi tu tu xình xịch chạy dài!'
+      '30-36': 'Tàu hỏa chạy tu tu!'
     },
     quizPrompt: {
       '18-24': 'Đoàn tàu hỏa ở đâu nào?',
@@ -358,7 +360,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Vù vù! Máy bay.',
       '24-30': 'Máy bay bay cao.',
-      '30-36': 'Máy bay bay vù vù trên bầu trời xanh!'
+      '30-36': 'Máy bay bay trên trời.'
     },
     quizPrompt: {
       '18-24': 'Máy bay đâu rồi bé ơi?',
@@ -378,7 +380,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Quả bóng! Tưng tưng.',
       '24-30': 'Bóng lăn tròn.',
-      '30-36': 'Bé đá quả bóng lăn tròn tưng tưng thật vui!'
+      '30-36': 'Bé đá bóng lăn tròn!'
     },
     quizPrompt: {
       '18-24': 'Quả bóng tròn ở đâu nào?',
@@ -398,7 +400,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Gấu bông! Ôm nào.',
       '24-30': 'Bé ôm gấu bông.',
-      '30-36': 'Bạn gấu bông mềm mại ôm bé đi ngủ!'
+      '30-36': 'Con ôm gấu bông ngủ.'
     },
     quizPrompt: {
       '18-24': 'Bạn gấu bông đâu rồi?',
@@ -418,7 +420,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Kính coong! Xe đạp.',
       '24-30': 'Bé đạp xe đi.',
-      '30-36': 'Xe đạp bấm chuông kính coong vui quá!'
+      '30-36': 'Xe đạp kêu kính coong!'
     },
     quizPrompt: {
       '18-24': 'Chiếc xe đạp đâu rồi bé ơi?',
@@ -440,7 +442,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ba ơi! Ba bế.',
       '24-30': 'Ba bế bé lên.',
-      '30-36': 'Con chào ba, con yêu ba nhiều lắm ạ!'
+      '30-36': 'Con chào ba ạ!'
     },
     quizPrompt: {
       '18-24': 'Ba ở đâu rồi bé ơi?',
@@ -460,7 +462,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Mẹ ơi! Mẹ ôm.',
       '24-30': 'Mẹ ôm bé nhé.',
-      '30-36': 'Con chào mẹ, con yêu mẹ nhiều lắm ạ!'
+      '30-36': 'Con yêu mẹ lắm!'
     },
     quizPrompt: {
       '18-24': 'Mẹ ở đâu rồi bé ơi?',
@@ -480,7 +482,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ông... Bà! Chào ạ.',
       '24-30': 'Chào ông bà ạ.',
-      '30-36': 'Con khoanh tay chào ông bà ạ!'
+      '30-36': 'Con chào ông bà ạ!'
     },
     quizPrompt: {
       '18-24': 'Ông Bà ở đâu nào?',
@@ -500,7 +502,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Cái mắt! Chớp chớp.',
       '24-30': 'Mắt chớp chớp.',
-      '30-36': 'Đôi mắt tròn xinh nhìn thấy ba mẹ!'
+      '30-36': 'Mắt con nhìn thấy mẹ.'
     },
     quizPrompt: {
       '18-24': 'Đôi mắt xinh ở đâu nào?',
@@ -520,7 +522,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Cái mũi! Hít hà.',
       '24-30': 'Mũi ngửi hoa thơm.',
-      '30-36': 'Cái mũi nhỏ xíu ngửi mùi hoa thơm quá!'
+      '30-36': 'Mũi ngửi hoa thơm quá!'
     },
     quizPrompt: {
       '18-24': 'Cái mũi xinh ở đâu bé ơi?',
@@ -540,7 +542,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Bàn tay! Vỗ tay.',
       '24-30': 'Bé vỗ tay hoan hô.',
-      '30-36': 'Hai bàn tay xinh vỗ tay hoan hô nào!'
+      '30-36': 'Con vỗ tay hoan hô!'
     },
     quizPrompt: {
       '18-24': 'Bàn tay xinh ở đâu nào?',
@@ -562,7 +564,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Mặt trời! Ấm quá.',
       '24-30': 'Mặt trời tỏa nắng.',
-      '30-36': 'Chào ông mặt trời tỏa nắng ấm áp buổi sáng!'
+      '30-36': 'Mặt trời chiếu nắng ấm.'
     },
     quizPrompt: {
       '18-24': 'Ông mặt trời ở đâu bé ơi?',
@@ -582,7 +584,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Tí tách! Trời mưa.',
       '24-30': 'Trời mưa tí tách.',
-      '30-36': 'Hạt mưa rơi tí tách trên mái nhà mát quá!'
+      '30-36': 'Mưa rơi tí tách tí tách.'
     },
     quizPrompt: {
       '18-24': 'Đám mây mưa đâu rồi?',
@@ -602,7 +604,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Bông hoa! Thơm quá.',
       '24-30': 'Bông hoa nở đẹp.',
-      '30-36': 'Bông hoa nở tươi và có mùi thơm quá!'
+      '30-36': 'Bông hoa nở thơm quá!'
     },
     quizPrompt: {
       '18-24': 'Bông hoa xinh ở đâu nào?',
@@ -622,7 +624,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Ông trăng! Ngủ ngon.',
       '24-30': 'Ông trăng trên trời.',
-      '30-36': 'Ông trăng sáng lên rồi, chúc bé ngủ ngon nhé!'
+      '30-36': 'Trăng lên rồi, ngủ ngon nhé!'
     },
     quizPrompt: {
       '18-24': 'Ông trăng ở đâu bé ơi?',
@@ -642,7 +644,7 @@ export const VOCABULARY = [
     phrases: {
       '18-24': 'Cái cây! Xanh quá.',
       '24-30': 'Cây xanh lá mát.',
-      '30-36': 'Cây xanh rung rinh lá trong gió mát!'
+      '30-36': 'Lá cây rung rinh trong gió.'
     },
     quizPrompt: {
       '18-24': 'Cái cây xanh ở đâu nào?',
@@ -652,6 +654,14 @@ export const VOCABULARY = [
     parentCue: 'Khi đi dạo, cho bé sờ vào lá cây thật và mô tả: "Lá xanh nè, gió thổi xào xạc!"'
   }
 ];
+
+export const CATEGORIES = [...CORE_CATEGORIES, ...EXTRA_CATEGORIES];
+
+/** 52 từ: 30 danh từ quen thuộc + 12 từ hành động + 10 từ giao tiếp */
+export const VOCABULARY = [...CORE_VOCABULARY, ...EXTRA_VOCABULARY];
+
+/** Từ dùng được trong trò chơi Nghe & Tìm (bỏ các từ trừu tượng như "nữa", "hết") */
+export const QUIZ_VOCABULARY = VOCABULARY.filter((item) => item.quiz !== false);
 
 export function getVocabById(id) {
   return VOCABULARY.find((item) => item.id === id) || VOCABULARY[0];

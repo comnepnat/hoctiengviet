@@ -7,6 +7,7 @@
  */
 
 import { FAIRYTALE_FILTERS, FAIRY_TALES } from '../data/fairytales.js';
+import { getShortPage } from '../data/fairytalesShort.js';
 import {
   deleteParentRecording,
   getAiApiKey,
@@ -83,6 +84,18 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
     stopSpeaking();
   };
 
+  /** Bản kể ngắn: mặc định bật cho bé 18–30 tháng, Ba Mẹ có thể đổi */
+  function isShortMode() {
+    const st = loadState();
+    return st.fairyShortMode ?? st.ageStage !== '30-36';
+  }
+
+  function pageParagraphs(story, idx) {
+    const page = story.pages[idx];
+    if (!page) return [];
+    return (isShortMode() && getShortPage(story.id, idx)) || page.paragraphs;
+  }
+
   function getStoryById(id) {
     return FAIRY_TALES.find((s) => s.id === id) || FAIRY_TALES[0];
   }
@@ -134,7 +147,9 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
     const stillActive = () => myToken === narrationToken;
 
     // 1. Ưu tiên giọng thu âm thật của Ba Mẹ cho trang này nếu bắt đầu từ đầu trang!
-    if (startPara === 0) {
+    //    (bản thu là bản đầy đủ nên chỉ dùng khi đang kể đầy đủ)
+    const paragraphs = pageParagraphs(story, pageIndex);
+    if (startPara === 0 && !isShortMode()) {
       const parentBlob = await getParentRecording(pageRecordingKey(story.id, pageIndex));
       if (!stillActive()) return;
       if (parentBlob) {
@@ -163,10 +178,15 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
 
     // 2. Kể tự nhiên theo từng câu & câu thoại (hoặc Giọng AI Neural nếu đã bật)
     const rate = loadState().fairyStoryRate || 0.94;
-    for (let i = startPara; i < page.paragraphs.length; i++) {
+    if (startPara === 0 && isShortMode()) {
+      playSfx(page.sfx || 'warm');
+      await waitMs(300);
+      if (!stillActive()) return;
+    }
+    for (let i = startPara; i < paragraphs.length; i++) {
       if (!stillActive()) return;
       updateParagraphHighlight(i);
-      const ok = await speakNaturalParagraph(page.paragraphs[i], {
+      const ok = await speakNaturalParagraph(paragraphs[i], {
         rateOverride: rate,
         shouldContinue: stillActive
       });
@@ -440,6 +460,15 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
             >
               ${isBedtime ? '☀️ Sáng dịu' : '🌙 Đêm êm'}
             </button>
+            <button
+              id="btn-ft-length"
+              type="button"
+              class="ft-mode-btn ${isShortMode() ? 'is-active' : ''}"
+              aria-pressed="${isShortMode()}"
+              title="Kể ngắn (câu 3–7 từ) cho bé nhỏ, hoặc kể đầy đủ cho bé lớn"
+            >
+              ${isShortMode() ? '🧸 Kể ngắn' : '📖 Kể đầy đủ'}
+            </button>
           </div>
         </div>
 
@@ -568,7 +597,7 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
 
               <!-- Story Paragraphs (Tap any paragraph to listen) -->
               <div class="ft-paragraphs" aria-live="polite">
-                ${page.paragraphs
+                ${pageParagraphs(story, pageIndex)
                   .map(
                     (para, idx) => `
                     <p
@@ -657,6 +686,16 @@ export function renderFairyTalesView(container, { spawnStars, showToast, params 
         musicBtn.setAttribute('aria-pressed', String(nowOn));
         musicBtn.textContent = nowOn ? '🎵 Nhạc: Bật' : '🎵 Nhạc êm';
       }
+    });
+
+    container.querySelector('#btn-ft-length').addEventListener('click', () => {
+      stopNarration();
+      stopPageRecorder();
+      const next = !isShortMode();
+      saveState({ fairyShortMode: next });
+      playSfx('page');
+      if (showToast) showToast(next ? 'Kể ngắn cho bé nhỏ: câu ngắn, dễ nhắc theo.' : 'Kể đầy đủ cho bé lớn.');
+      renderReader(false);
     });
 
     container.querySelector('#btn-ft-bedtime').addEventListener('click', () => {

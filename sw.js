@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bi-bo-v5';
+const CACHE_NAME = 'bi-bo-v6';
 const ASSETS = [
   './',
   './index.html',
@@ -11,12 +11,15 @@ const ASSETS = [
   './js/data/stories.js',
   './js/data/fairytales.js',
   './js/data/fairytalesExtra.js',
+  './js/data/fairytalesShort.js',
+  './js/data/vocabExtra.js',
   './js/data/parentTips.js',
   './js/illustrations/art.js',
   './js/services/storage.js',
   './js/services/audio.js',
   './js/services/voice.js',
   './js/services/intent.js',
+  './js/services/dialect.js',
   './js/views/home.js',
   './js/views/cards.js',
   './js/views/listenGame.js',

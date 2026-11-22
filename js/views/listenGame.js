@@ -5,13 +5,13 @@
  * - Sau khi tìm đúng, mời bé nhắc lại từ để kết hợp hiểu ngôn ngữ + phát âm!
  */
 
-import { VOCABULARY, getStageMeta } from '../data/curriculum.js';
+import { QUIZ_VOCABULARY, getStageMeta } from '../data/curriculum.js';
 import { getIllustration } from '../illustrations/art.js';
 import { loadState } from '../services/storage.js';
 import { playSfx, speakText, stopSpeaking } from '../services/audio.js';
 
 function pickRoundItems(count, lastTargetId) {
-  const pool = [...VOCABULARY].sort(() => Math.random() - 0.5);
+  const pool = [...QUIZ_VOCABULARY].sort(() => Math.random() - 0.5);
   let target = pool.find((item) => item.id !== lastTargetId) || pool[0];
   const distractors = pool.filter((item) => item.id !== target.id).slice(0, count - 1);
   const choices = [target, ...distractors].sort(() => Math.random() - 0.5);
