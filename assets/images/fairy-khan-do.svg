@@ -1,0 +1,88 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <clipPath id="paperClip"><rect x="18" y="18" width="764" height="414" rx="22"/></clipPath>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    
+    <linearGradient id="sky3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D6E9D5"/>
+      <stop offset="55%" stop-color="#FFF6E2"/>
+      <stop offset="100%" stop-color="#EBF2D8"/>
+    </linearGradient>
+    
+  </defs>
+  <rect width="800" height="450" fill="#FDF8EE"/>
+  <g clip-path="url(#paperClip)">
+    
+    <rect x="18" y="18" width="764" height="414" fill="url(#sky3)"/>
+    <circle cx="155" cy="96" r="38" fill="#FCE085" opacity="0.85"/>
+    <!-- Woodland trees backdrop -->
+    <g fill="#8BB27B" opacity="0.75">
+      <circle cx="95" cy="175" r="72"/><circle cx="190" cy="188" r="64"/><circle cx="670" cy="172" r="78"/><circle cx="745" cy="200" r="64"/>
+    </g>
+    <g fill="#9C7856" stroke="#5A4332" stroke-width="2.2">
+      <rect x="85" y="195" width="22" height="125" rx="6"/>
+      <rect x="665" y="190" width="24" height="135" rx="6"/>
+    </g>
+    <!-- Meadow & winding path -->
+    <path d="M18 290 Q240 250 480 285 T782 275 L782 432 L18 432 Z" fill="#A6C78B"/>
+    <path d="M180 432 Q310 355 415 320 Q505 292 555 274 L605 278 Q535 312 465 348 Q385 388 310 432 Z" fill="#F2DEC0" stroke="#CBB18D" stroke-width="2"/>
+    <!-- Grandma's cozy cottage in background right -->
+    <g transform="translate(505, 165)">
+      <rect x="12" y="54" width="110" height="70" rx="6" fill="#FFF4E0" stroke="#5A4332" stroke-width="2.5"/>
+      <path d="M2 58 L67 12 L132 58 Z" fill="#D98B68" stroke="#5A4332" stroke-width="2.6" stroke-linejoin="round"/>
+      <rect x="92" y="14" width="16" height="32" rx="3" fill="#B87458" stroke="#5A4332" stroke-width="2.2"/>
+      <circle cx="102" cy="2" r="8" fill="#FFFDF8" opacity="0.85"/><circle cx="112" cy="-10" r="10" fill="#FFFDF8" opacity="0.7"/>
+      <rect x="52" y="80" width="26" height="44" rx="12" fill="#A3724C" stroke="#5A4332" stroke-width="2.2"/>
+      <rect x="24" y="72" width="18" height="20" rx="4" fill="#FBE193" stroke="#5A4332" stroke-width="2"/>
+      <rect x="92" y="72" width="18" height="20" rx="4" fill="#FBE193" stroke="#5A4332" stroke-width="2"/>
+    </g>
+    <!-- Little Red Riding Hood -->
+    <g transform="translate(270, 175)">
+      <!-- Shoes & legs -->
+      <rect x="44" y="176" width="12" height="28" rx="5" fill="#FCE0C5" stroke="#4F4035" stroke-width="2.2"/>
+      <rect x="74" y="176" width="12" height="28" rx="5" fill="#FCE0C5" stroke="#4F4035" stroke-width="2.2"/>
+      <ellipse cx="48" cy="206" rx="13" ry="7" fill="#6E4E3A"/>
+      <ellipse cx="82" cy="206" rx="13" ry="7" fill="#6E4E3A"/>
+      <!-- Skirt & apron -->
+      <path d="M24 128 L106 128 L118 182 L12 182 Z" fill="#FFF8EE" stroke="#4F4035" stroke-width="2.5" stroke-linejoin="round"/>
+      <!-- Coral-red fairy cape -->
+      <path d="M28 72 C10 105 8 145 14 162 L116 162 C122 145 120 105 102 72 Z" fill="#DC5D4C" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+      <!-- Red hood & face -->
+      <circle cx="65" cy="48" r="34" fill="#DC5D4C" stroke="#4F4035" stroke-width="2.6"/>
+      <circle cx="65" cy="52" r="24" fill="#FCE0C5" stroke="#4F4035" stroke-width="2.4"/>
+      <path d="M43 44 Q65 28 87 44 Q74 36 65 40 Q55 36 43 44 Z" fill="#5A3E2D"/>
+      <circle cx="56" cy="52" r="3.4" fill="#3E2F26"/><circle cx="74" cy="52" r="3.4" fill="#3E2F26"/>
+      <circle cx="49" cy="59" r="4.5" fill="#E88F82" opacity="0.55"/><circle cx="81" cy="59" r="4.5" fill="#E88F82" opacity="0.55"/>
+      <path d="M59 62 Q65 68 71 62" stroke="#3E2F26" stroke-width="2.4" stroke-linecap="round"/>
+      <!-- Ribbon bow -->
+      <circle cx="65" cy="80" r="5" fill="#F6C85F" stroke="#4F4035" stroke-width="2"/>
+      <!-- Wicker basket with bread & cake -->
+      <g transform="translate(92, 108)">
+        <path d="M8 22 C8 -2 50 -2 50 22" stroke="#8C623B" stroke-width="4" fill="none"/>
+        <ellipse cx="29" cy="24" rx="18" ry="10" fill="#F2C272" stroke="#7A5230" stroke-width="2"/>
+        <path d="M6 24 L52 24 L46 52 L12 52 Z" fill="#D4A163" stroke="#5A4332" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M10 34 H48 M12 43 H46 M22 24 V52 M36 24 V52" stroke="#9A6D3C" stroke-width="1.8"/>
+      </g>
+    </g>
+    <!-- Friendly little bluebird on flower branch -->
+    <g transform="translate(150, 295)">
+      <ellipse cx="32" cy="26" rx="20" ry="15" fill="#6FA4CA" stroke="#455D70" stroke-width="2.2"/>
+      <circle cx="46" cy="18" r="12" fill="#6FA4CA" stroke="#455D70" stroke-width="2.2"/>
+      <polygon points="56,16 66,20 56,23" fill="#E5AA3E"/>
+      <circle cx="49" cy="16" r="2.4" fill="#3E2F26"/>
+    </g>
+    <!-- Colorful wildflowers -->
+    <g>
+      <circle cx="110" cy="378" r="10" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.8"/><circle cx="110" cy="378" r="4" fill="#E5AA3E"/>
+      <circle cx="165" cy="398" r="9" fill="#F7C2BE" stroke="#C86247" stroke-width="1.6"/><circle cx="165" cy="398" r="3.5" fill="#FFF"/>
+      <circle cx="520" cy="382" r="10" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.8"/><circle cx="520" cy="382" r="4" fill="#E5AA3E"/>
+      <circle cx="640" cy="372" r="10" fill="#F7C2BE" stroke="#C86247" stroke-width="1.6"/><circle cx="640" cy="372" r="3.5" fill="#FFF"/>
+      <circle cx="690" cy="396" r="9" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.8"/><circle cx="690" cy="396" r="3.5" fill="#E5AA3E"/>
+    </g>
+    
+  </g>
+  <rect x="18" y="18" width="764" height="414" rx="22" stroke="#D9C7AE" stroke-width="3" fill="none"/>
+</svg>

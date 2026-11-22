@@ -18,9 +18,14 @@ import {
   listParentRecordingIds
 } from '../services/storage.js';
 import {
+  AI_VOICE_PRESETS,
+  getActiveVoiceInfo,
+  getLastAiVoiceError,
   getVietnameseVoices,
   playBlob,
   playSfx,
+  scoreVietnameseVoice,
+  speakNaturalParagraph,
   speakText,
   stopSpeaking
 } from '../services/audio.js';
@@ -45,12 +50,12 @@ export async function renderParentView(
         <div class="section-header" style="margin-bottom:0;">
           <div>
             <h1 class="section-title">Góc dành cho Ba Mẹ</h1>
-            <p class="section-sub">Tùy chỉnh theo độ tuổi của bé, thu âm giọng ba mẹ và theo dõi những từ đầu tiên.</p>
+            <p class="section-sub">Tùy chỉnh giọng đọc tự nhiên, thu âm giọng ba mẹ và theo dõi hành trình tập nói của bé.</p>
           </div>
         </div>
 
         <div class="parent-tabs" role="tablist">
-          <button type="button" class="parent-tab-btn ${activeTab === 'settings' ? 'is-active' : ''}" data-tab="settings">⚙️ Cài đặt</button>
+          <button type="button" class="parent-tab-btn ${activeTab === 'settings' ? 'is-active' : ''}" data-tab="settings">⚙️ Cài đặt & Giọng đọc</button>
           <button type="button" class="parent-tab-btn ${activeTab === 'voice' ? 'is-active' : ''}" data-tab="voice">🎙️ Giọng Ba Mẹ (${recordedIds.size})</button>
           <button type="button" class="parent-tab-btn ${activeTab === 'diary' ? 'is-active' : ''}" data-tab="diary">⭐ Nhật ký từ (${state.spokenWords.length}/${VOCABULARY.length})</button>
           <button type="button" class="parent-tab-btn ${activeTab === 'tips' ? 'is-active' : ''}" data-tab="tips">💡 Mẹo dạy nói</button>
@@ -95,10 +100,21 @@ export async function renderParentView(
     ];
 
     const speeds = [
-      { value: 0.72, label: 'Chậm rõ (18–24 tháng)' },
-      { value: 0.84, label: 'Tự nhiên êm dịu' },
-      { value: 0.96, label: 'Bình thường' }
+      { value: 0.84, label: 'Chậm rõ (18–24 tháng)' },
+      { value: 0.92, label: 'Tự nhiên êm dịu' },
+      { value: 1.0, label: 'Bình thường' }
     ];
+
+    const providers = [
+      { id: 'browser', label: '🔊 Giọng Thiết Bị (Miễn phí)' },
+      { id: 'google', label: '⭐ Google Cloud TTS (Chirp 3 HD · Free 1M/tháng)' },
+      { id: 'openai', label: '✨ AI OpenAI TTS' },
+      { id: 'elevenlabs', label: '✨ AI ElevenLabs' }
+    ];
+
+    const activeProvider = state.voiceProvider || 'browser';
+    const voiceInfo = getActiveVoiceInfo();
+    const presets = AI_VOICE_PRESETS[activeProvider] || [];
 
     body.innerHTML = `
       <div class="setting-group">
@@ -116,30 +132,89 @@ export async function renderParentView(
       </div>
 
       <div class="setting-group">
-        <h2 class="setting-label">2. Tốc độ & Giọng đọc tiếng Việt</h2>
-        <p class="setting-hint">Nói chậm hơn một chút giúp bé nghe rõ thanh điệu và dễ bắt chước khẩu hình.</p>
+        <h2 class="setting-label">2. Giọng đọc tiếng Việt tự nhiên (Không còn giọng máy)</h2>
+        <p class="setting-hint">
+          Bi Bô tự động chọn giọng Neural/Natural tốt nhất trên thiết bị, ngắt nhịp nghỉ lấy hơi theo từng câu thoại,
+          hoặc cho phép Ba Mẹ kết nối giọng AI kể chuyện siêu truyền cảm / tự thu âm trực tiếp trong từng trang truyện.
+        </p>
+
+        <div class="voice-status-banner ${voiceInfo.isNatural ? 'is-good' : 'is-basic'}">
+          <span><strong>Giọng đang dùng:</strong> ${voiceInfo.label}</span>
+          <button id="btn-test-voice" class="small-action-btn" type="button">🔊 Nghe thử kể chuyện</button>
+        </div>
+
         <div class="option-pills">
-          ${speeds
+          ${providers
             .map(
-              (sp) => `
-            <button type="button" class="option-pill ${Math.abs(state.speechRate - sp.value) < 0.03 ? 'is-active' : ''}" data-speed="${sp.value}">
-              ${sp.label}
+              (p) => `
+            <button type="button" class="option-pill ${activeProvider === p.id ? 'is-active' : ''}" data-provider="${p.id}">
+              ${p.label}
             </button>
           `
             )
             .join('')}
         </div>
-        <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:6px;">
-          <select id="voice-select" class="styled-select" aria-label="Chọn giọng đọc tiếng Việt">
-            <option value="">Giọng tiếng Việt mặc định của thiết bị</option>
-            ${voices
+
+        ${
+          activeProvider === 'browser'
+            ? `
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:4px;">
+            <select id="voice-select" class="styled-select" aria-label="Chọn giọng đọc tiếng Việt">
+              <option value="">Tự động chọn giọng tiếng Việt hay nhất (Khuyên dùng)</option>
+              ${voices
+                .map((v) => {
+                  const sc = scoreVietnameseVoice(v);
+                  const tag = sc >= 140 ? '⭐ Rất tự nhiên' : sc >= 110 ? '✓ Tự nhiên' : 'Cơ bản';
+                  return `<option value="${v.voiceURI}" ${state.selectedVoiceURI === v.voiceURI ? 'selected' : ''}>${v.name} — ${tag}</option>`;
+                })
+                .join('')}
+            </select>
+          </div>
+          <p class="setting-hint" style="background:var(--accent-honey-soft); padding:10px 14px; border-radius:12px; color:var(--ink-primary);">
+            💡 <strong>Mẹo miễn phí giọng đọc hay như người thật:</strong> Mở Bi Bô trên trình duyệt <strong>Microsoft Edge</strong> (có sẵn giọng AI <em>Hoài My Natural / Nam Minh Natural</em>) hoặc <strong>Google Chrome</strong> (<em>Google tiếng Việt</em>), hoặc bấm nút <strong>🎙️ Ba Mẹ tự đọc</strong> ngay trong mỗi trang truyện cổ tích!
+          </p>
+        `
+            : `
+          <div class="ai-voice-config">
+            <label class="setting-hint" for="ai-voice-select"><strong>Chọn giọng AI kể chuyện:</strong></label>
+            <select id="ai-voice-select" class="styled-select">
+              ${presets
+                .map(
+                  (pr) =>
+                    `<option value="${pr.id}" ${state.aiVoiceId === pr.id ? 'selected' : ''}>${pr.label}</option>`
+                )
+                .join('')}
+            </select>
+
+            <label class="setting-hint" for="ai-api-key"><strong>API Key (chỉ lưu riêng trên máy bạn, âm thanh được lưu cache offline sau lần đọc đầu):</strong></label>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <input
+                id="ai-api-key"
+                type="password"
+                class="styled-select"
+                placeholder="Dán API Key ${activeProvider.toUpperCase()} vào đây..."
+                value="${state.aiApiKey || ''}"
+                autocomplete="off"
+              />
+              <button id="btn-save-ai-key" class="small-action-btn small-action-btn--rec" type="button">💾 Lưu khóa</button>
+            </div>
+          </div>
+        `
+        }
+
+        <div style="margin-top:6px;">
+          <span class="setting-hint" style="display:block; margin-bottom:6px;"><strong>Tốc độ đọc:</strong></span>
+          <div class="option-pills">
+            ${speeds
               .map(
-                (v) =>
-                  `<option value="${v.voiceURI}" ${state.selectedVoiceURI === v.voiceURI ? 'selected' : ''}>${v.name} (${v.lang})</option>`
+                (sp) => `
+              <button type="button" class="option-pill ${Math.abs(state.speechRate - sp.value) < 0.03 ? 'is-active' : ''}" data-speed="${sp.value}">
+                ${sp.label}
+              </button>
+            `
               )
               .join('')}
-          </select>
-          <button id="btn-test-voice" class="small-action-btn" type="button">🔊 Nghe thử</button>
+          </div>
         </div>
       </div>
 
@@ -182,23 +257,67 @@ export async function renderParentView(
       });
     });
 
-    body.querySelectorAll('[data-speed]').forEach((btn) => {
+    body.querySelectorAll('[data-provider]').forEach((btn) => {
       btn.addEventListener('click', () => {
-        const speed = Number(btn.dataset.speed);
-        saveState({ speechRate: speed });
+        const provider = btn.dataset.provider;
+        const firstPreset = AI_VOICE_PRESETS[provider]?.[0]?.id || 'nova';
         playSfx('tap');
-        speakText('Chào bé yêu, mình cùng tập nói thật chậm và rõ nhé!', { rateOverride: speed });
+        saveState({
+          voiceProvider: provider,
+          aiVoiceId: AI_VOICE_PRESETS[provider] ? firstPreset : loadState().aiVoiceId
+        });
         render();
       });
     });
 
-    body.querySelector('#voice-select').addEventListener('change', (e) => {
-      saveState({ selectedVoiceURI: e.target.value });
-      showToast('Đã chọn giọng đọc mới.');
+    const voiceSelect = body.querySelector('#voice-select');
+    if (voiceSelect) {
+      voiceSelect.addEventListener('change', (e) => {
+        saveState({ selectedVoiceURI: e.target.value });
+        showToast('Đã cập nhật giọng đọc tiếng Việt.');
+        render();
+      });
+    }
+
+    const aiVoiceSelect = body.querySelector('#ai-voice-select');
+    if (aiVoiceSelect) {
+      aiVoiceSelect.addEventListener('change', (e) => {
+        saveState({ aiVoiceId: e.target.value });
+        showToast('Đã đổi giọng AI kể chuyện.');
+        render();
+      });
+    }
+
+    const saveKeyBtn = body.querySelector('#btn-save-ai-key');
+    if (saveKeyBtn) {
+      saveKeyBtn.addEventListener('click', () => {
+        const keyInput = body.querySelector('#ai-api-key');
+        const keyVal = (keyInput?.value || '').trim();
+        saveState({ aiApiKey: keyVal });
+        playSfx('celebrate');
+        showToast(keyVal ? 'Đã lưu API Key giọng AI tự nhiên!' : 'Đã xóa API Key.');
+        render();
+      });
+    }
+
+    body.querySelectorAll('[data-speed]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const speed = Number(btn.dataset.speed);
+        saveState({ speechRate: speed, fairyStoryRate: speed });
+        playSfx('tap');
+        speakText('Chào bé yêu! Hôm nay mình cùng nghe kể chuyện cổ tích thật hay nhé!', {
+          rateOverride: speed
+        });
+        render();
+      });
     });
 
-    body.querySelector('#btn-test-voice').addEventListener('click', () => {
-      speakText('Meo meo! Con mèo trắng đang uống sữa ngon quá!');
+    body.querySelector('#btn-test-voice').addEventListener('click', async () => {
+      await speakNaturalParagraph(
+        'Ngày xửa ngày xưa, ở một ngôi làng nhỏ yên bình, có cây khế chín vàng ươm dưới ánh nắng mai. Chú chim thần vỗ cánh vù vù đáp xuống mỉm cười chào bé yêu!'
+      );
+      const err = getLastAiVoiceError();
+      if (err) showToast(`⚠️ ${err}`);
     });
 
     body.querySelectorAll('[data-echo]').forEach((btn) => {

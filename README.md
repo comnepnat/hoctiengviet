@@ -20,7 +20,11 @@
    - *Buổi sáng của bé*, *Đi công viên chơi*, *Giờ ăn ngon miệng*, *Giờ đi ngủ êm dịu*.
    - Bé chạm vào từng đồ vật trong tranh để nghe câu chuyện gắn với sinh hoạt hằng ngày.
 
-5. **Góc Ba Mẹ (có cổng khóa giữ 1,5 giây)**
+5. **Truyện cổ tích đặc sắc (16 truyện đọc trọn vẹn dưới 10 phút)**
+   - Tuyển chọn **8 truyện cổ tích Việt Nam** (*Cây Khế, Chú Cuội Cung Trăng, Cô Tấm & Cá Bống, Thánh Gióng, Bánh Chưng Bánh Giầy, Mai An Tiêm & Dưa Hấu, Cây Tre Trăm Đốt, Hoa Cúc Trắng*) và **8 truyện cổ tích Thế giới** (*Thỏ & Rùa, Củ Cải Khổng Lồ, Ba Chú Heo Con, Cô Bé Quàng Khăn Đỏ, Vịt Con Hóa Thiên Nga, Mèo Đi Hia, Bạch Tuyết & 7 Chú Lùn, Kiến & Ve Sầu*).
+   - **Giọng đọc tiếng Việt tự nhiên**: tự xếp hạng & chọn giọng Neural/Natural tốt nhất của trình duyệt (ngắt nghỉ theo từng câu thoại, giữ cao độ tự nhiên), hỗ trợ **Giọng AI cao cấp** (OpenAI / Google Neural2 / ElevenLabs, lưu cache offline), **Ba Mẹ tự thu âm từng trang**, nhạc hộp ru ngủ êm dịu và **Chế độ Đêm Êm Dịu**.
+
+6. **Góc Ba Mẹ (có cổng khóa giữ 1,5 giây)**
    - **Phòng thu giọng Ba Mẹ**: Ba mẹ tự thu âm giọng thật cho từng thẻ hình (lưu cục bộ bằng IndexedDB, hoạt động offline, không tải dữ liệu lên máy chủ).
    - **Nhật ký những từ đầu tiên**: Đánh dấu các từ bé đã bắt đầu nói được & xem mốc phát triển ngôn ngữ tham khảo.
    - **Hẹn giờ Bạn Gấu buồn ngủ**: Nhắc bé dừng chơi êm dịu sau 10 / 15 / 20 phút.

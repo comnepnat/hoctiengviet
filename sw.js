@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bi-bo-v1';
+const CACHE_NAME = 'bi-bo-v3';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,8 @@ const ASSETS = [
   './js/app.js',
   './js/data/curriculum.js',
   './js/data/stories.js',
+  './js/data/fairytales.js',
+  './js/data/fairytalesExtra.js',
   './js/data/parentTips.js',
   './js/illustrations/art.js',
   './js/services/storage.js',
@@ -18,6 +20,7 @@ const ASSETS = [
   './js/views/cards.js',
   './js/views/listenGame.js',
   './js/views/stories.js',
+  './js/views/fairytales.js',
   './js/views/parents.js',
   './assets/icon.svg',
   './assets/images/mascot-bear.jpg',
@@ -25,7 +28,23 @@ const ASSETS = [
   './assets/images/scene-morning.jpg',
   './assets/images/scene-park.jpg',
   './assets/images/scene-mealtime.jpg',
-  './assets/images/scene-bedtime.jpg'
+  './assets/images/scene-bedtime.jpg',
+  './assets/images/fairy-cay-khe.jpg',
+  './assets/images/fairy-chu-cuoi.jpg',
+  './assets/images/fairy-tho-rua.jpg',
+  './assets/images/fairy-cu-cai.jpg',
+  './assets/images/fairy-tam-cam.jpg',
+  './assets/images/fairy-ba-chu-heo.jpg',
+  './assets/images/fairy-banh-chung.jpg',
+  './assets/images/fairy-cay-tre.jpg',
+  './assets/images/fairy-hoa-cuc-trang.jpg',
+  './assets/images/fairy-thanh-giong.svg',
+  './assets/images/fairy-dua-hau.svg',
+  './assets/images/fairy-khan-do.svg',
+  './assets/images/fairy-vit-con.svg',
+  './assets/images/fairy-meo-di-hia.svg',
+  './assets/images/fairy-bach-tuyet.svg',
+  './assets/images/fairy-kien-ve-sau.svg'
 ];
 
 self.addEventListener('install', (event) => {

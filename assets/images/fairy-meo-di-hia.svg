@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <clipPath id="paperClip"><rect x="18" y="18" width="764" height="414" rx="22"/></clipPath>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    
+    <linearGradient id="sky5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#D4E8F5"/>
+      <stop offset="65%" stop-color="#FFF5E2"/>
+      <stop offset="100%" stop-color="#F7E5C8"/>
+    </linearGradient>
+    
+  </defs>
+  <rect width="800" height="450" fill="#FDF8EE"/>
+  <g clip-path="url(#paperClip)">
+    
+    <rect x="18" y="18" width="764" height="414" fill="url(#sky5)"/>
+    <!-- Pastel fairytale castle on distant hill -->
+    <g transform="translate(530, 88)" opacity="0.9">
+      <rect x="30" y="70" width="90" height="80" fill="#F7EFE1" stroke="#8C735B" stroke-width="2.2"/>
+      <rect x="15" y="45" width="32" height="105" fill="#F2E4CE" stroke="#8C735B" stroke-width="2.2"/>
+      <rect x="103" y="45" width="32" height="105" fill="#F2E4CE" stroke="#8C735B" stroke-width="2.2"/>
+      <rect x="58" y="28" width="36" height="122" fill="#FFF8EC" stroke="#8C735B" stroke-width="2.2"/>
+      <polygon points="10,48 31,12 52,48" fill="#89A8C6" stroke="#5E7790" stroke-width="2"/>
+      <polygon points="98,48 119,12 140,48" fill="#89A8C6" stroke="#5E7790" stroke-width="2"/>
+      <polygon points="52,32 76,-6 100,32" fill="#DC7B62" stroke="#9C4F3D" stroke-width="2"/>
+      <rect x="66" y="112" width="20" height="38" rx="10" fill="#9C7353"/>
+    </g>
+    <!-- Hills & sunny village lane -->
+    <path d="M18 265 Q210 218 420 262 T782 235 L782 432 L18 432 Z" fill="#A9C78E"/>
+    <path d="M18 335 Q240 295 480 328 T782 315 L782 432 L18 432 Z" fill="#EBD7B7" stroke="#C5AE8A" stroke-width="2"/>
+    <!-- Puss in Boots center -->
+    <g transform="translate(265, 92)">
+      <!-- Fluffy curled tail -->
+      <path d="M62 215 C12 205 8 158 38 148 C54 142 52 165 36 168" stroke="#E59C5C" stroke-width="16" stroke-linecap="round" fill="none"/>
+      <path d="M62 215 C12 205 8 158 38 148 C54 142 52 165 36 168" stroke="#5A4332" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      <!-- Shiny Leather Boots -->
+      <g fill="#7C4F36" stroke="#422A1D" stroke-width="2.6" stroke-linejoin="round">
+        <path d="M76 232 L106 232 L104 282 L120 290 Q124 300 112 302 L72 302 L74 275 Z"/>
+        <path d="M132 232 L162 232 L160 282 L178 290 Q182 300 170 302 L128 302 L130 275 Z"/>
+        <!-- Boot cuffs -->
+        <rect x="70" y="224" width="42" height="16" rx="6" fill="#9B6646"/>
+        <rect x="126" y="224" width="42" height="16" rx="6" fill="#9B6646"/>
+      </g>
+      <!-- Body & Belt -->
+      <ellipse cx="118" cy="184" rx="54" ry="56" fill="#F0AA68" stroke="#5A4332" stroke-width="2.8"/>
+      <ellipse cx="118" cy="192" rx="30" ry="38" fill="#FFF3E0"/>
+      <rect x="68" y="188" width="100" height="14" rx="5" fill="#6E4730" stroke="#422A1D" stroke-width="2.2"/>
+      <rect x="108" y="185" width="20" height="20" rx="4" fill="#F2C45A" stroke="#422A1D" stroke-width="2.2"/>
+      <!-- Green flowing cape -->
+      <path d="M72 135 Q46 175 40 228 Q68 220 82 195 Z" fill="#5D926B" stroke="#3F6649" stroke-width="2.4"/>
+      <!-- Arms (one waving kindly) -->
+      <path d="M168 158 Q205 142 214 118" stroke="#F0AA68" stroke-width="18" stroke-linecap="round"/>
+      <path d="M168 158 Q205 142 214 118" stroke="#5A4332" stroke-width="2.5" stroke-linecap="round"/>
+      <!-- Cute Cat Head -->
+      <polygon points="78,96 70,58 105,78" fill="#F0AA68" stroke="#5A4332" stroke-width="2.6" stroke-linejoin="round"/>
+      <polygon points="158,96 166,58 131,78" fill="#F0AA68" stroke="#5A4332" stroke-width="2.6" stroke-linejoin="round"/>
+      <circle cx="118" cy="108" r="46" fill="#F0AA68" stroke="#5A4332" stroke-width="2.8"/>
+      <ellipse cx="118" cy="122" rx="22" ry="15" fill="#FFF3E0"/>
+      <circle cx="101" cy="104" r="5.5" fill="#3E2F26"/><circle cx="99.5" cy="102" r="2" fill="#FFF"/>
+      <circle cx="135" cy="104" r="5.5" fill="#3E2F26"/><circle cx="133.5" cy="102" r="2" fill="#FFF"/>
+      <circle cx="88" cy="116" r="6" fill="#E07A5F" opacity="0.38"/><circle cx="148" cy="116" r="6" fill="#E07A5F" opacity="0.38"/>
+      <polygon points="113,114 123,114 118,120" fill="#E07A5F"/>
+      <path d="M108 124 Q113 130 118 124 Q123 130 128 124" stroke="#3E2F26" stroke-width="2.6" stroke-linecap="round"/>
+      <path d="M62 110 L84 113 M60 120 L84 120 M174 110 L152 113 M176 120 L152 120" stroke="#7A5A42" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- Feathered Storybook Hat -->
+      <ellipse cx="118" cy="64" rx="68" ry="16" fill="#5D82A6" stroke="#3B536B" stroke-width="2.6"/>
+      <path d="M78 62 C82 26 154 26 158 62 Z" fill="#6D93B8" stroke="#3B536B" stroke-width="2.6"/>
+      <path d="M148 52 C175 18 205 22 198 44 C190 56 168 58 148 56 Z" fill="#F5C95F" stroke="#B68A2D" stroke-width="2.2"/>
+    </g>
+    
+  </g>
+  <rect x="18" y="18" width="764" height="414" rx="22" stroke="#D9C7AE" stroke-width="3" fill="none"/>
+</svg>

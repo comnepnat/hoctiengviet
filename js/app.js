@@ -11,6 +11,7 @@ import { renderHomeView } from './views/home.js';
 import { renderCardsView } from './views/cards.js';
 import { renderListenGameView } from './views/listenGame.js';
 import { renderStoriesView } from './views/stories.js';
+import { renderFairyTalesView } from './views/fairytales.js';
 import { renderParentView } from './views/parents.js';
 
 const mainEl = document.getElementById('main-content');
@@ -107,6 +108,8 @@ async function navigate(viewName) {
     currentCleanup = renderListenGameView(mainEl, helpers) || null;
   } else if (viewName === 'stories') {
     currentCleanup = renderStoriesView(mainEl, helpers) || null;
+  } else if (viewName === 'fairytales') {
+    currentCleanup = renderFairyTalesView(mainEl, helpers) || null;
   } else if (viewName === 'parents') {
     currentCleanup = (await renderParentView(mainEl, helpers)) || null;
   }

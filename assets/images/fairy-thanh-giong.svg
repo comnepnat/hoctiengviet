@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <clipPath id="paperClip"><rect x="18" y="18" width="764" height="414" rx="22"/></clipPath>
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FCE4B8"/>
+      <stop offset="55%" stop-color="#FFF4DA"/>
+      <stop offset="100%" stop-color="#E5F1DA"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFF2A8"/>
+      <stop offset="65%" stop-color="#F6C85F" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#F6C85F" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="hill1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#A8C794"/>
+      <stop offset="100%" stop-color="#7EA66E"/>
+    </linearGradient>
+    
+  </defs>
+  <rect width="800" height="450" fill="#FDF8EE"/>
+  <g clip-path="url(#paperClip)">
+    
+    <rect x="18" y="18" width="764" height="414" fill="url(#sky)"/>
+    <circle cx="620" cy="115" r="95" fill="url(#sun)"/>
+    <circle cx="620" cy="115" r="44" fill="#FBE082" stroke="#D9A84E" stroke-width="2.5"/>
+    <!-- Soft clouds -->
+    <g fill="#FFFDF8" opacity="0.9">
+      <ellipse cx="180" cy="95" rx="68" ry="24"/><ellipse cx="145" cy="86" rx="36" ry="22"/><ellipse cx="215" cy="88" rx="34" ry="20"/>
+      <ellipse cx="470" cy="78" rx="52" ry="18"/><ellipse cx="445" cy="72" rx="28" ry="16"/>
+    </g>
+    <!-- Distant hills -->
+    <path d="M18 330 Q190 250 380 305 T782 285 L782 432 L18 432 Z" fill="#C4D9B0"/>
+    <path d="M18 355 Q240 310 470 355 T782 340 L782 432 L18 432 Z" fill="url(#hill1)"/>
+    <!-- Background bamboo stalks left & right -->
+    <g stroke="#557A4B" stroke-width="2.5" stroke-linecap="round">
+      <rect x="52" y="40" width="16" height="390" rx="6" fill="#8BB375"/>
+      <rect x="82" y="65" width="14" height="365" rx="6" fill="#9EC486"/>
+      <rect x="112" y="95" width="12" height="335" rx="5" fill="#7CA368"/>
+      <rect x="695" y="48" width="16" height="385" rx="6" fill="#8BB375"/>
+      <rect x="726" y="75" width="14" height="360" rx="6" fill="#9EC486"/>
+      <path d="M52 120 H68 M52 190 H68 M52 260 H68 M52 330 H68 M82 150 H96 M82 230 H96 M82 310 H96 M695 140 H711 M695 220 H711 M695 300 H711" stroke="#4D6E44" stroke-width="3"/>
+    </g>
+    <!-- Bamboo leaves -->
+    <g fill="#739E63" stroke="#4F7045" stroke-width="1.8">
+      <ellipse cx="110" cy="85" rx="26" ry="7" transform="rotate(-24 110 85)"/>
+      <ellipse cx="122" cy="108" rx="24" ry="7" transform="rotate(14 122 108)"/>
+      <ellipse cx="144" cy="140" rx="22" ry="6" transform="rotate(-18 144 140)"/>
+      <ellipse cx="676" cy="110" rx="26" ry="7" transform="rotate(20 676 110)"/>
+      <ellipse cx="668" cy="136" rx="22" ry="6" transform="rotate(-15 668 136)"/>
+    </g>
+    <!-- Noble Silver-Blue Horse leaping gently -->
+    <g transform="translate(230, 175)">
+      <!-- Tail -->
+      <path d="M35 95 C5 95 -8 128 15 148 C30 135 42 120 50 105 Z" fill="#6B839B" stroke="#4F4035" stroke-width="2.6"/>
+      <!-- Back legs -->
+      <path d="M72 132 L45 182 Q42 190 52 192 L65 185 L92 140" fill="#B5C8D8" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M98 134 L88 188 Q88 196 100 196 L108 188 L114 138" fill="#9BB3C7" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+      <!-- Front leaping legs -->
+      <path d="M210 120 L256 150 Q266 155 260 166 L246 164 L196 136" fill="#9BB3C7" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+      <path d="M225 112 L278 125 Q288 128 286 140 L272 142 L212 128" fill="#C6D7E5" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+      <!-- Body -->
+      <ellipse cx="148" cy="108" rx="92" ry="44" fill="#C6D7E5" stroke="#4F4035" stroke-width="2.8"/>
+      <!-- Saddle blanket -->
+      <path d="M105 68 Q148 56 190 68 L184 118 Q148 128 110 118 Z" fill="#E07A5F" stroke="#4F4035" stroke-width="2.4"/>
+      <path d="M112 108 Q148 118 184 108" stroke="#F6C85F" stroke-width="4" fill="none"/>
+      <!-- Neck & Head -->
+      <path d="M206 90 C222 54 242 28 262 28 C278 28 294 42 308 58 C314 66 306 79 292 78 L266 74 C256 92 246 112 225 118 Z" fill="#C6D7E5" stroke="#4F4035" stroke-width="2.8" stroke-linejoin="round"/>
+      <!-- Mane -->
+      <path d="M212 72 Q220 46 238 30 Q232 52 244 46 Q230 68 238 66 Z" fill="#6B839B" stroke="#4F4035" stroke-width="2.2"/>
+      <!-- Ear -->
+      <polygon points="256,28 264,10 274,28" fill="#B5C8D8" stroke="#4F4035" stroke-width="2.4" stroke-linejoin="round"/>
+      <!-- Friendly Eye & Smile -->
+      <circle cx="276" cy="48" r="4.2" fill="#3E2F26"/>
+      <circle cx="274.5" cy="46.5" r="1.4" fill="#FFF"/>
+      <circle cx="288" cy="60" r="5" fill="#E89A89" opacity="0.45"/>
+      <path d="M292 69 Q298 73 305 68" stroke="#3E2F26" stroke-width="2.2" stroke-linecap="round"/>
+      <!-- Golden sparkle breath -->
+      <g fill="#F6C85F" filter="url(#softGlow)">
+        <circle cx="328" cy="56" r="6"/><circle cx="348" cy="46" r="4.5"/><circle cx="344" cy="68" r="4"/>
+      </g>
+      <!-- Little Hero Thánh Gióng -->
+      <g transform="translate(105, -26)">
+        <!-- Flowing scarf -->
+        <path d="M26 74 C-12 68 -24 88 -4 96 C12 94 24 86 34 82 Z" fill="#E5AA3E" stroke="#4F4035" stroke-width="2.2"/>
+        <!-- Body tunic -->
+        <path d="M26 68 Q48 62 70 68 L76 112 L20 112 Z" fill="#F2C86B" stroke="#4F4035" stroke-width="2.6" stroke-linejoin="round"/>
+        <path d="M22 96 H74" stroke="#E07A5F" stroke-width="5"/>
+        <!-- Head -->
+        <circle cx="48" cy="40" r="25" fill="#FCE0C5" stroke="#4F4035" stroke-width="2.6"/>
+        <!-- Hero helmet/headband -->
+        <path d="M23 36 C25 14 71 14 73 36 Z" fill="#7D96AB" stroke="#4F4035" stroke-width="2.5"/>
+        <circle cx="48" cy="24" r="5" fill="#F6C85F" stroke="#4F4035" stroke-width="1.8"/>
+        <!-- Cute smiling face -->
+        <circle cx="40" cy="42" r="3.4" fill="#3E2F26"/>
+        <circle cx="57" cy="42" r="3.4" fill="#3E2F26"/>
+        <circle cx="34" cy="48" r="4.5" fill="#E89A89" opacity="0.5"/>
+        <circle cx="63" cy="48" r="4.5" fill="#E89A89" opacity="0.5"/>
+        <path d="M42 51 Q48 58 55 51" stroke="#3E2F26" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Arm holding bamboo cluster high -->
+        <path d="M68 74 L104 42" stroke="#FCE0C5" stroke-width="11" stroke-linecap="round"/>
+        <path d="M68 74 L104 42" stroke="#4F4035" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Held green bamboo cluster -->
+        <g transform="translate(106, 40) rotate(-32)">
+          <rect x="-4" y="-75" width="9" height="120" rx="4" fill="#73A85A" stroke="#456B35" stroke-width="2.2"/>
+          <path d="M-4 -45 H5 M-4 -15 H5 M-4 15 H5" stroke="#456B35" stroke-width="2.2"/>
+          <ellipse cx="16" cy="-58" rx="18" ry="5.5" transform="rotate(-20 16 -58)" fill="#88BA6D" stroke="#456B35" stroke-width="1.6"/>
+          <ellipse cx="-16" cy="-42" rx="16" ry="5" transform="rotate(24 -16 -42)" fill="#88BA6D" stroke="#456B35" stroke-width="1.6"/>
+          <ellipse cx="14" cy="-24" rx="15" ry="5" transform="rotate(12 14 -24)" fill="#88BA6D" stroke="#456B35" stroke-width="1.6"/>
+        </g>
+      </g>
+    </g>
+    <!-- Foreground grass & daisies -->
+    <g>
+      <circle cx="170" cy="390" r="8" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.5"/><circle cx="170" cy="390" r="3" fill="#E5AA3E"/>
+      <circle cx="620" cy="382" r="9" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.5"/><circle cx="620" cy="382" r="3.5" fill="#E5AA3E"/>
+      <circle cx="660" cy="396" r="7" fill="#FFFBF2" stroke="#D9A84E" stroke-width="1.5"/><circle cx="660" cy="396" r="2.8" fill="#E5AA3E"/>
+    </g>
+    
+  </g>
+  <rect x="18" y="18" width="764" height="414" rx="22" stroke="#D9C7AE" stroke-width="3" fill="none"/>
+</svg>

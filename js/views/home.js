@@ -86,6 +86,19 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
           <p class="activity-door__desc">4 bức tranh màu nước tương tác: buổi sáng, công viên, giờ ăn và đi ngủ.</p>
           <span class="activity-door__cta">Khám phá tranh →</span>
         </button>
+
+        <button id="door-fairytales" class="activity-door activity-door--fairytales" type="button">
+          <span class="activity-door__pill">⏱ Dưới 10 phút</span>
+          <div class="activity-door__icon" aria-hidden="true">
+            <svg viewBox="0 0 40 40" width="38" height="38" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M27.5 24.5A11 11 0 1 1 15.5 7.5a8.5 8.5 0 0 0 12 17Z"/>
+              <path d="M29 9l1.2 2.8L33 13l-2.8 1.2L29 17l-1.2-2.8L25 13l2.8-1.2L29 9Z"/>
+            </svg>
+          </div>
+          <h2 class="activity-door__title">Truyện cổ tích đặc sắc</h2>
+          <p class="activity-door__desc">16 truyện cổ tích Việt Nam & thế giới đọc dưới 10 phút, giọng kể tự nhiên, nhạc ru êm dịu & thu giọng Ba Mẹ.</p>
+          <span class="activity-door__cta">Nghe cổ tích hay →</span>
+        </button>
       </div>
 
       <aside class="daily-tip-strip" aria-label="Mẹo nhỏ cho Ba Mẹ">
@@ -121,7 +134,7 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
     });
   });
 
-  // 3 cánh cửa hoạt động
+  // 4 cánh cửa hoạt động
   container.querySelector('#door-cards').addEventListener('click', () => {
     playSfx('tap');
     navigate('cards');
@@ -135,6 +148,11 @@ export function renderHomeView(container, { navigate, onStageChanged, spawnStars
   container.querySelector('#door-stories').addEventListener('click', () => {
     playSfx('tap');
     navigate('stories');
+  });
+
+  container.querySelector('#door-fairytales').addEventListener('click', () => {
+    playSfx('tap');
+    navigate('fairytales');
   });
 
   // Xem mẹo tiếp theo
