@@ -8,6 +8,7 @@
  */
 
 import {
+  getAiApiKey,
   getCachedAiAudio,
   getParentRecording,
   loadState,
@@ -296,7 +297,7 @@ export function pickBestVietnameseVoice(selectedURI = '') {
 
 export function getActiveVoiceInfo() {
   const state = loadState();
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const providerLabel =
       state.voiceProvider === 'google'
         ? 'Google Cloud TTS'
@@ -384,108 +385,165 @@ function buildCacheKey(provider, voiceId, text) {
   return `${provider}::${voiceId}::${text.trim()}`;
 }
 
+// Giọng dự phòng khi giọng đã chọn không có trong dự án Google Cloud (giống English4kids)
+const GOOGLE_FALLBACK_VOICES = ['vi-VN-Chirp3-HD-Aoede', 'vi-VN-Neural2-A', 'vi-VN-Wavenet-A', 'vi-VN-Standard-A'];
+let workingGoogleVoice = '';
+let aiFailStreak = 0;
+const MAX_AI_FAIL_STREAK = 3;
+
+/** Gọi lại sau khi Ba Mẹ lưu khóa / đổi giọng để thử lại giọng AI từ đầu. */
+export function resetAiVoiceSession() {
+  workingGoogleVoice = '';
+  aiFailStreak = 0;
+  lastAiVoiceError = '';
+}
+
+async function fetchWithTimeout(url, options, ms = 9000) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function readGoogleError(res) {
+  try {
+    const j = await res.json();
+    return j?.error?.message || '';
+  } catch {
+    return '';
+  }
+}
+
+function explainGoogleError(status, message) {
+  if (status === 400 && /api key not valid/i.test(message)) return 'API Key không đúng — ba mẹ kiểm tra lại khóa (thường bắt đầu bằng "AIza").';
+  if (status === 403 && /has not been used|disabled/i.test(message)) return 'Dự án chưa bật "Cloud Text-to-Speech API" — vào Google Cloud Console bấm Enable.';
+  if (status === 403 && /referer|referrer/i.test(message)) return 'Khóa đang giới hạn tên miền — thêm địa chỉ trang Bi Bô vào "Website restrictions".';
+  if (status === 403 && /billing/i.test(message)) return 'Dự án Google Cloud chưa bật thanh toán (Billing) — cần bật để dùng Text-to-Speech.';
+  if (status === 429) return 'Đã vượt hạn mức Google Cloud TTS — thử lại sau.';
+  return message ? `Google Cloud TTS: ${message}` : `Google Cloud TTS báo lỗi (${status}).`;
+}
+
+function base64ToMp3Blob(b64) {
+  const bin = atob(b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  return new Blob([bytes], { type: 'audio/mpeg' });
+}
+
+/** Trả về { blob, voice } hoặc { blob: null, error } */
+async function synthesizeGoogle(text, apiKey, preferredVoice) {
+  const chain = [...new Set([workingGoogleVoice, preferredVoice, ...GOOGLE_FALLBACK_VOICES].filter(Boolean))];
+  let lastError = '';
+  for (const name of chain) {
+    const isChirp3 = name.includes('Chirp3-HD');
+    const audioConfig = isChirp3
+      ? { audioEncoding: 'MP3', speakingRate: 0.94 }
+      : { audioEncoding: 'MP3', speakingRate: 0.93, pitch: 0 };
+    // Khóa đi qua header thay vì URL để không nằm trong lịch sử/nhật ký đường dẫn
+    const res = await fetchWithTimeout('https://texttospeech.googleapis.com/v1/text:synthesize', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Goog-Api-Key': apiKey },
+      body: JSON.stringify({ input: { text }, voice: { languageCode: 'vi-VN', name }, audioConfig })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.audioContent) {
+        workingGoogleVoice = name;
+        return { blob: base64ToMp3Blob(data.audioContent), voice: name };
+      }
+      continue;
+    }
+    const msg = await readGoogleError(res);
+    lastError = explainGoogleError(res.status, msg);
+    // Lỗi khóa / quyền / hạn mức: đổi giọng cũng vô ích → dừng ngay
+    const voiceProblem = res.status === 400 && !/api key/i.test(msg);
+    if (!voiceProblem && res.status !== 404) break;
+  }
+  return { blob: null, error: lastError || 'Google Cloud TTS không trả về âm thanh.' };
+}
+
+async function synthesizeAi(text, state) {
+  const provider = state.voiceProvider;
+  const apiKey = getAiApiKey(state);
+  const voiceId = state.aiVoiceId || (AI_VOICE_PRESETS[provider]?.[0]?.id ?? '');
+  if (!apiKey) return { blob: null, error: 'Chưa nhập API Key.' };
+
+  if (provider === 'google') {
+    return synthesizeGoogle(text, apiKey, voiceId.startsWith('vi-VN') ? voiceId : '');
+  }
+  if (provider === 'openai') {
+    const res = await fetchWithTimeout('https://api.openai.com/v1/audio/speech', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'tts-1', voice: voiceId || 'nova', input: text, speed: 0.94 })
+    });
+    if (!res.ok) return { blob: null, error: `OpenAI TTS báo lỗi (${res.status}) — kiểm tra lại API Key.` };
+    return { blob: await res.blob(), voice: voiceId };
+  }
+  if (provider === 'elevenlabs') {
+    const res = await fetchWithTimeout(`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`, {
+      method: 'POST',
+      headers: { 'xi-api-key': apiKey, 'Content-Type': 'application/json', Accept: 'audio/mpeg' },
+      body: JSON.stringify({
+        text,
+        model_id: 'eleven_multilingual_v2',
+        voice_settings: { stability: 0.58, similarity_boost: 0.78, style: 0.35 }
+      })
+    });
+    if (!res.ok) return { blob: null, error: `ElevenLabs báo lỗi (${res.status}) — kiểm tra lại API Key.` };
+    return { blob: await res.blob(), voice: voiceId };
+  }
+  return { blob: null, error: '' };
+}
+
 async function fetchAiSpeechBlob(text, state) {
   lastAiVoiceError = '';
   const provider = state.voiceProvider;
-  const apiKey = (state.aiApiKey || '').trim();
-  const voiceId = state.aiVoiceId || (AI_VOICE_PRESETS[provider]?.[0]?.id ?? 'vi-VN-Chirp3-HD-Aoede');
-  if (!provider || provider === 'browser' || !apiKey) return null;
+  if (!provider || provider === 'browser' || !getAiApiKey(state)) return null;
+  // Lỗi liên tiếp (sai khóa, hết hạn mức, mất mạng): tạm dùng giọng thiết bị cho phiên này
+  if (aiFailStreak >= MAX_AI_FAIL_STREAK) return null;
 
+  const voiceId = state.aiVoiceId || (AI_VOICE_PRESETS[provider]?.[0]?.id ?? '');
   const cacheKey = buildCacheKey(provider, voiceId, text);
   const cached = await getCachedAiAudio(cacheKey);
   if (cached) return cached;
 
   try {
-    let blob = null;
-
-    if (provider === 'google') {
-      const isChirp3 = voiceId.includes('Chirp3-HD');
-      const audioConfig = isChirp3
-        ? { audioEncoding: 'MP3', speakingRate: 0.94 }
-        : { audioEncoding: 'MP3', speakingRate: 0.93, pitch: 0 };
-
-      const res = await fetch(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${encodeURIComponent(apiKey)}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            input: { text },
-            voice: { languageCode: 'vi-VN', name: voiceId },
-            audioConfig
-          })
-        }
-      );
-      if (!res.ok) {
-        let msg = `Google Cloud TTS báo lỗi (${res.status})`;
-        try {
-          const errJson = await res.json();
-          if (errJson?.error?.message) msg = errJson.error.message;
-        } catch {}
-        lastAiVoiceError = msg;
-        return null;
-      }
-      const data = await res.json();
-      if (!data.audioContent) return null;
-      const bin = atob(data.audioContent);
-      const bytes = new Uint8Array(bin.length);
-      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-      blob = new Blob([bytes], { type: 'audio/mpeg' });
-    } else if (provider === 'openai') {
-      const res = await fetch('https://api.openai.com/v1/audio/speech', {
-        method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: 'tts-1',
-          voice: voiceId,
-          input: text,
-          speed: 0.94
-        })
-      });
-      if (!res.ok) {
-        lastAiVoiceError = `OpenAI TTS báo lỗi (${res.status}) — kiểm tra lại API Key.`;
-        return null;
-      }
-      blob = await res.blob();
-    } else if (provider === 'elevenlabs') {
-      const res = await fetch(
-        `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voiceId)}`,
-        {
-          method: 'POST',
-          headers: {
-            'xi-api-key': apiKey,
-            'Content-Type': 'application/json',
-            Accept: 'audio/mpeg'
-          },
-          body: JSON.stringify({
-            text,
-            model_id: 'eleven_multilingual_v2',
-            voice_settings: {
-              stability: 0.58,
-              similarity_boost: 0.78,
-              style: 0.35
-            }
-          })
-        }
-      );
-      if (!res.ok) {
-        lastAiVoiceError = `ElevenLabs báo lỗi (${res.status}) — kiểm tra lại API Key.`;
-        return null;
-      }
-      blob = await res.blob();
-    }
-
+    const { blob, error } = await synthesizeAi(text, state);
     if (blob && blob.size > 100) {
+      aiFailStreak = 0;
       saveCachedAiAudio(cacheKey, blob);
       return blob;
     }
+    aiFailStreak += 1;
+    lastAiVoiceError = error || 'Giọng AI không trả về âm thanh.';
     return null;
-  } catch (err) {
+  } catch {
+    aiFailStreak += 1;
     lastAiVoiceError = 'Không kết nối được tới máy chủ giọng AI (kiểm tra mạng hoặc API Key).';
     return null;
+  }
+}
+
+/**
+ * Kiểm tra khóa API ngay trong Góc Ba Mẹ: đọc thử một câu bằng giọng AI.
+ * @returns {Promise<{ ok: boolean, voice?: string, error?: string }>}
+ */
+export async function testAiVoice(sampleText = 'Chào bé yêu! Gấu Mây kể chuyện cho bé nghe nhé!') {
+  resetAiVoiceSession();
+  const state = loadState();
+  if (!state.voiceProvider || state.voiceProvider === 'browser') return { ok: false, error: 'Chưa chọn nhà cung cấp giọng AI.' };
+  if (!getAiApiKey(state)) return { ok: false, error: 'Chưa nhập API Key.' };
+  try {
+    const { blob, voice, error } = await synthesizeAi(sampleText, state);
+    if (!blob || blob.size <= 100) return { ok: false, error: error || 'Không nhận được âm thanh.' };
+    playBlob(blob);
+    return { ok: true, voice };
+  } catch {
+    return { ok: false, error: 'Không kết nối được tới máy chủ (kiểm tra mạng).' };
   }
 }
 
@@ -564,7 +622,7 @@ export async function speakText(text, { rateOverride = null, pitch = 1.0 } = {})
   if (!cleaned) return false;
 
   // 1. Ưu tiên Giọng AI Siêu Tự Nhiên nếu Ba Mẹ đã bật & nhập API Key
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const aiBlob = await fetchAiSpeechBlob(cleaned, state);
     if (aiBlob) {
       const rate = rateOverride ? Math.max(0.82, Math.min(1.15, rateOverride / 0.94)) : 1;
@@ -588,7 +646,7 @@ export async function speakNaturalParagraph(
   const rate = rateOverride ?? state.fairyStoryRate ?? 0.94;
 
   // Nếu có Giọng AI tự nhiên (OpenAI / Google Neural2 / ElevenLabs): đọc trọn đoạn mượt mà luôn!
-  if (state.voiceProvider && state.voiceProvider !== 'browser' && state.aiApiKey?.trim()) {
+  if (getAiApiKey(state)) {
     const aiBlob = await fetchAiSpeechBlob(paragraph, state);
     if (!shouldContinue()) return false;
     if (aiBlob) {

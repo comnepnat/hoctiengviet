@@ -19,9 +19,14 @@ const PRAISE_LINES = [
   'Yêu quá đi! Giọng bé thật dễ thương!'
 ];
 
-export async function renderCardsView(container, { showToast, spawnStars }) {
-  let activeCategory = CATEGORIES[0].id;
-  let focusedItemId = null;
+export async function renderCardsView(container, { showToast, spawnStars, params = {} }) {
+  const deepLinkItem = params.vocabId ? VOCABULARY.find((v) => v.id === params.vocabId) : null;
+  let activeCategory = deepLinkItem
+    ? deepLinkItem.category
+    : CATEGORIES.some((c) => c.id === params.categoryId)
+      ? params.categoryId
+      : CATEGORIES[0].id;
+  let focusedItemId = deepLinkItem ? deepLinkItem.id : null;
   let parentVoiceIds = new Set(await listParentRecordingIds());
   let activeListener = null;
 
@@ -328,7 +333,12 @@ export async function renderCardsView(container, { showToast, spawnStars }) {
     });
   }
 
-  render();
+  await render();
+
+  // Mở từ ô "Hỏi Gấu Mây": phát âm thẻ ngay
+  if (deepLinkItem && params.autoSpeak) {
+    speakVocabCard(deepLinkItem, { slow: Boolean(params.slow), ageStage: loadState().ageStage });
+  }
 
   return () => {
     cleanupListening();

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bi-bo-v3';
+const CACHE_NAME = 'bi-bo-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -16,6 +16,7 @@ const ASSETS = [
   './js/services/storage.js',
   './js/services/audio.js',
   './js/services/voice.js',
+  './js/services/intent.js',
   './js/views/home.js',
   './js/views/cards.js',
   './js/views/listenGame.js',
