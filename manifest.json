@@ -1,0 +1,19 @@
+{
+  "name": "Bi Bô — Học Nói Tự Nhiên Cho Bé",
+  "short_name": "Bi Bô",
+  "description": "Ứng dụng học nói tiếng Việt tự nhiên, nhẹ nhàng theo phương pháp Montessori & tương tác giọng nói cho bé 18 tháng – 3 tuổi.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFBF2",
+  "theme_color": "#FFFBF2",
+  "lang": "vi",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
